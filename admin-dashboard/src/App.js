@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Home from './components/Home';
 import Clients from './components/Clients';
@@ -14,16 +14,6 @@ function NotFound() {
   return <div>Page Not Found</div>;
 }
 
-function TrainerDetailWithParams() {
-  const { id } = useParams();
-  return <div>Trainer Detail for ID: {id}</div>;
-}
-
-function MovementDetailWithParams() {
-  const { id } = useParams();
-  return <div>Movement Detail for ID: {id}</div>;
-}
-
 function App() {
   return (
     <Router>
@@ -33,9 +23,9 @@ function App() {
         <Route path="/clients" element={<Clients />} />
         <Route path="/client/:id" element={<ClientDetail />} />
         <Route path="/trainer" element={<Trainers />} />
-        <Route path="/trainer/:id" element={<TrainerDetailWithParams />} />
+        <Route path="/trainer/:id" element={<TrainerDetail />} />
         <Route path="/movement" element={<Movements />} />
-        <Route path="/movement/:id" element={<MovementDetailWithParams />} />
+        <Route path="/movement/:id" element={<MovementDetail />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Clients.css';
 
 const columns = [
@@ -14,7 +15,7 @@ const mockMovements = Array.from({ length: 10 }).map((_, i) => ({
   name: 'Movement name',
   category: 'Category',
   description: 'Description here',
-  id: '123456',
+  id: (123456 + i).toString(),
   profilePic: 'profile picture url',
   createdAt: 'Date here',
 }));
@@ -23,6 +24,7 @@ function Movements() {
   const [search, setSearch] = useState('');
   const [sortCol, setSortCol] = useState('');
   const [sortDir, setSortDir] = useState('asc');
+  const navigate = useNavigate();
 
   const filtered = mockMovements.filter(row =>
     columns.some(col =>
@@ -75,7 +77,12 @@ function Movements() {
         </thead>
         <tbody>
           {sorted.map((c, i) => (
-            <tr key={i}>
+            <tr
+              key={i}
+              className="clickable-row"
+              onClick={() => navigate(`/movement/${c.id}`)}
+              style={{ cursor: 'pointer' }}
+            >
               {columns.map(col => (
                 <td key={col.key}>{c[col.key]}</td>
               ))}
