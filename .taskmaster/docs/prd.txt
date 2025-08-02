@@ -1,0 +1,217 @@
+# PRD: Admin Dashboard – Becca’s Workout App
+
+## Overview
+
+This admin dashboard is the foundational tool for managing the core entities of Becca’s Workout App: clients, trainers, workouts, and movements. It enables administrators to add, edit, and delete records, assign relationships between trainers and clients, and view workout usage across the system.
+
+The admin is used by internal staff only, not by clients or trainers. It provides full visibility into user profiles, workout assignment history, and exercise-level usage. This will eventually support downstream trainer and client applications by ensuring structured, consistent data.
+
+This version of the admin does not include authentication, notifications, or integrations — but it is scoped to enable a full future admin and application suite.
+
+---
+
+## Core Features
+
+### Client Management
+- View all clients in a searchable, sortable table
+- Add/edit/delete client profiles via modals
+- Assign or remove trainers from a client
+- View a client’s assigned workouts grouped by trainer
+- Launch workout builder directly from a client’s detail view
+
+### Trainer Management
+- View all trainers in a searchable, sortable table
+- Add/edit/delete trainer profiles via modals
+- View each trainer’s assigned clients
+- See all workouts assigned by that trainer to each client
+- Launch workout builder from trainer context
+
+### Movement Library Management
+- Full table of all movements with every field shown
+- Add/edit/delete movements via modals
+- View a movement’s usage across all workouts
+- Changes to movements apply retroactively
+
+### Workout Builder
+- Modal-based tool to create or edit workouts
+- Dynamic field logic based on movement metadata
+- Assign or change client during workout creation
+- Clone an existing workout to create a new unassigned instance
+- Delete individual exercises with undo support
+
+### Admin & Permissions Management
+- Admin list view with support for adding/removing admins
+- `superadmin` role enforced:
+  - Only superadmins can manage other admins
+  - At least one superadmin must exist at all times
+
+### Activity Logging
+- Table of all admin actions (create, update, delete)
+- Filterable by entity type and action
+- Accessible from admin nav as a separate view
+
+---
+
+## User Experience
+
+### User Personas
+- **Admin User**: Staff managing all data; requires high visibility, reliable data entry, and safety checks
+- **Future Personas** (not included in this build): Trainer, Client
+
+### Key User Flows
+1. Add a new client and assign a trainer
+2. View a client’s profile and workouts
+3. Create a new workout using the builder modal
+4. Add a new movement and verify its use in workouts
+5. Assign multiple clients to a trainer and track their plans
+
+### UI/UX Considerations
+- All modals include an undo toast after actions
+- Tables support live search and column sorting
+- Deletion actions require confirmation
+- All create/edit/delete actions log to the activity log
+- Navigation includes persistent header or sidebar
+
+---
+
+## Technical Architecture
+
+### System Components
+- React web app (admin only)
+- Supabase backend (tables, auth, storage)
+- Modular view components for each entity type
+
+### Data Models (Supabase Tables)
+- `clients`
+- `trainers`
+- `movements`
+- `workouts`
+- `workout_exercises`
+- `trainer_clients`
+- `scheduled_workouts`
+- `admins`
+- `activity_logs`
+
+### APIs and Integrations
+- No external APIs in scope
+- Supabase client library for querying and mutations
+- Supabase Storage for movement media
+
+### Infrastructure Requirements
+- Supabase project w/ schema defined above
+- Storage buckets for video/image uploads
+- Deployment of React web project (e.g., Vercel, Netlify)
+
+---
+
+## Development Roadmap
+
+### Phase 1: Routing & Shell Views
+- Set up all routes: `/`, `/clients`, `/client/:id`, `/trainer`, `/trainer/:id`, `/movement`, `/movement/:id`, `/admin`
+- Build placeholder pages
+- Add top-level navigation
+
+### Phase 2: Frontend View & Modal Buildout (Mock Data Only)
+
+#### Clients
+- `/clients`: build table UI
+- Add Client modal
+- `/client/:id`: detail page with:
+  - Trainer avatars + assign modal
+  - Grouped workouts
+  - Edit/delete client modals
+
+#### Trainers
+- `/trainer`: trainer table
+- `/trainer/:id`: detail with clients + workouts
+- Add/edit/delete modals
+
+#### Movements
+- `/movement`: full table of movements
+- `/movement/:id`: movement detail with workout usage
+- Add/edit/delete modals
+
+#### Admins
+- `/admin`: table of admin users
+- Add/edit/delete modals
+- Superadmin logic enforced
+
+#### Workout Builder
+- Modal used from trainer or client detail view
+- Movement search with dynamic fields
+- Supports clone and delete
+- Undo toast and reindexing on delete
+
+### Phase 3: Supabase Integration
+- Create and seed all tables listed in Architecture
+- Replace mock data with Supabase queries
+- Wire up create/edit/delete in each modal
+- Implement undo toasts
+- Implement reordering logic for exercises
+
+### Phase 4: Activity Logging
+- Add `activity_logs` table
+- Log all entity create/update/delete actions
+- `/admin/logs` view to browse and filter activity
+
+### Phase 5: QA Testing
+- Per-view QA checklist to validate:
+  - CRUD actions
+  - Undo functionality
+  - Activity logging
+  - Search/sort behavior
+  - Data joins and display
+
+---
+
+## Logical Dependency Chain
+
+1. Routing and static view stubs
+2. Navigation bar
+3. Client list and detail (mocked)
+4. Trainer list and detail
+5. Movement list and detail
+6. Admin list
+7. Workout builder modal
+8. Backend schema and Supabase setup
+9. Data binding (CRUD + undo)
+10. Activity logs + admin protections
+11. QA pass
+
+---
+
+## Risks and Mitigations
+
+### Technical Challenges
+- **Undo state management**  
+  Mitigation: Use single toast pattern with rollback logic stored in memory
+
+- **Movement field dynamic logic**  
+  Mitigation: Schema-driven rendering based on flags (e.g., requires weight, is timed)
+
+- **Editable references (e.g., workouts referencing clients/trainers)**  
+  Mitigation: Ensure foreign key enforcement in Supabase with cascading deletes disabled
+
+### MVP Scope Control
+- Workout templates, RLS policies, multi-org support deferred
+- No need for multi-user auth or client-facing dashboards yet
+
+### Resource Constraints
+- All work scoped to single admin-facing web project
+- Data seeding prioritized over live user input
+
+---
+
+## Appendix
+
+- Supabase schema planning (see: `movements`, `workouts`, etc.)
+- UI image references captured during scope (client detail, movement detail, etc.)
+- List of movement types and rules:
+  - Dumbbell = sets, reps, weight
+  - Cardio = time, distance
+  - Flexibility = time, notes
+  - etc.
+- All delete/edit/add actions follow same pattern:
+  - Instant UI update
+  - Undo toast
+  - Permanent change after timeout (3 sec)

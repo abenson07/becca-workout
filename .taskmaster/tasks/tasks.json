@@ -1,0 +1,281 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Project Repository",
+        "description": "Initialize the project repository for the admin dashboard using Git and create a new React application.",
+        "details": "Use Create React App to bootstrap the project. Initialize a Git repository and push it to a remote repository on GitHub or similar service.",
+        "testStrategy": "Verify that the project builds successfully and the initial React app runs without errors.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "in-progress",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install Node.js and npm",
+            "description": "Ensure that Node.js and npm are installed on your system to manage React and its dependencies.",
+            "dependencies": [],
+            "details": "Visit the official Node.js website at https://nodejs.org/ and download the LTS version. Follow the installation instructions for your operating system. After installation, verify by running `node -v` and `npm -v` in your terminal to check the installed versions.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Install a Code Editor",
+            "description": "Choose and install a code editor to write and manage your React code.",
+            "dependencies": [],
+            "details": "Download and install Visual Studio Code from https://code.visualstudio.com/. This editor is widely used for React development and offers various extensions to enhance productivity.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create a New React Application",
+            "description": "Use Create React App to bootstrap a new React project.",
+            "dependencies": [],
+            "details": "Open your terminal, navigate to the directory where you want to create your project, and run `npx create-react-app my-app`, replacing 'my-app' with your desired project name. This command sets up a new React application with a default configuration.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Navigate to the Project Directory",
+            "description": "Move into the newly created project directory to start working on your React application.",
+            "dependencies": [],
+            "details": "In your terminal, run `cd my-app` to enter the project directory. This is where you'll manage your React application files.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Start the Development Server",
+            "description": "Launch the React development server to view your application in the browser.",
+            "dependencies": [],
+            "details": "In the project directory, run `npm start`. This will open your React application in the browser at http://localhost:3000, where you can see the default React app running.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Initialize a Git Repository",
+            "description": "Set up Git to track changes in your project files.",
+            "dependencies": [],
+            "details": "In your project directory, run `git init` to initialize a new Git repository. This command creates a .git directory that will track changes to your project files.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Create a Remote Repository on GitHub",
+            "description": "Set up a remote repository on GitHub to store your project's code online.",
+            "dependencies": [],
+            "details": "Log in to your GitHub account and click on the '+' icon in the top right corner, then select 'New repository'. Name your repository (e.g., 'my-app'), add a description, choose visibility (public or private), and click 'Create repository'.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 8,
+            "title": "Connect Local Repository to GitHub and Push Initial Commit",
+            "description": "Link your local Git repository to the remote GitHub repository and push your initial commit.",
+            "dependencies": [],
+            "details": "In your terminal, run the following commands:\n\n```\ngit remote add origin https://github.com/your-username/my-app.git\ngit branch -M main\ngit add .\ngit commit -m \"Initial commit\"\ngit push -u origin main\n```\n\nReplace 'your-username' with your GitHub username. These commands set up the remote connection, rename the default branch to 'main', stage all files, commit them with a message, and push the commit to GitHub. For more details, refer to the GitHub Docs on creating a repository. ([docs.github.com](https://docs.github.com/en/get-started/quickstart/hello-world?utm_source=openai))",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Set Up Supabase Project",
+        "description": "Create a new Supabase project and configure the database schema according to the PRD requirements.",
+        "details": "Create tables for clients, trainers, movements, workouts, workout_exercises, trainer_clients, scheduled_workouts, admins, and activity_logs in Supabase. Ensure foreign key relationships are established where necessary.",
+        "testStrategy": "Check that all tables are created with the correct schema and relationships in Supabase.",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          "13"
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Implement Routing and Shell Views",
+        "description": "Set up routing for the admin dashboard using React Router.",
+        "details": "Define routes for all main views: `/`, `/clients`, `/client/:id`, `/trainer`, `/trainer/:id`, `/movement`, `/movement/:id`, `/admin`. Create placeholder components for each route.",
+        "testStrategy": "Navigate through the application to ensure all routes render the correct components.",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Build Navigation Bar",
+        "description": "Create a top-level navigation bar for the admin dashboard.",
+        "details": "Implement a responsive navigation bar that links to all main sections of the admin dashboard. Use React Router's Link component for navigation.",
+        "testStrategy": "Ensure that clicking on navigation links takes the user to the correct routes.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Develop Client Management Table",
+        "description": "Create a searchable and sortable table for managing clients.",
+        "details": "Use a library like React Table to build the client management table. Implement search and sort functionality.",
+        "testStrategy": "Test the table to ensure clients can be searched and sorted correctly.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Implement Client Modals for CRUD Operations",
+        "description": "Create modals for adding, editing, and deleting client profiles.",
+        "details": "Use React Modal or a similar library to create modals for client actions. Implement forms for adding and editing clients, and confirmation dialogs for deletion.",
+        "testStrategy": "Verify that clients can be added, edited, and deleted through the modals, and that the table updates accordingly.",
+        "priority": "medium",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Build Trainer Management Table",
+        "description": "Create a searchable and sortable table for managing trainers.",
+        "details": "Similar to the client management table, use React Table to build the trainer management table with search and sort functionality.",
+        "testStrategy": "Test the table to ensure trainers can be searched and sorted correctly.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Implement Trainer Modals for CRUD Operations",
+        "description": "Create modals for adding, editing, and deleting trainer profiles.",
+        "details": "Use React Modal to create modals for trainer actions, including forms for adding/editing trainers and confirmation dialogs for deletion.",
+        "testStrategy": "Verify that trainers can be added, edited, and deleted through the modals, and that the table updates accordingly.",
+        "priority": "medium",
+        "dependencies": [
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Develop Movement Library Management Table",
+        "description": "Create a full table of movements with all fields shown.",
+        "details": "Implement a table for movements using React Table, displaying all relevant fields and supporting search and sort functionality.",
+        "testStrategy": "Test the table to ensure movements can be searched and sorted correctly.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Implement Movement Modals for CRUD Operations",
+        "description": "Create modals for adding, editing, and deleting movements.",
+        "details": "Use React Modal to create modals for movement actions, including forms for adding/editing movements and confirmation dialogs for deletion.",
+        "testStrategy": "Verify that movements can be added, edited, and deleted through the modals, and that the table updates accordingly.",
+        "priority": "medium",
+        "dependencies": [
+          9
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Build Workout Builder Modal",
+        "description": "Create a modal-based tool for creating and editing workouts.",
+        "details": "Implement a modal that allows users to create or edit workouts, including dynamic field logic based on movement metadata.",
+        "testStrategy": "Test the modal to ensure workouts can be created and edited correctly, and that the data is saved in Supabase.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Implement Activity Logging",
+        "description": "Create a table to log all admin actions and filter by entity type and action.",
+        "details": "Implement a table for activity logs that records all create, update, and delete actions performed by admins.",
+        "testStrategy": "Verify that all admin actions are logged correctly and can be filtered by type.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "deferred",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Set Up Undo Functionality",
+        "description": "Implement undo functionality for create, edit, and delete actions across the application.",
+        "details": "Use a toast notification system to provide feedback on actions and allow users to undo changes within a specified timeout.",
+        "testStrategy": "Test the undo functionality to ensure it works correctly for all CRUD operations.",
+        "priority": "medium",
+        "dependencies": [
+          6,
+          8,
+          10,
+          11
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Conduct QA Testing",
+        "description": "Perform a comprehensive QA pass on all features of the admin dashboard.",
+        "details": "Create a QA checklist based on user flows and features outlined in the PRD. Validate all functionalities including CRUD actions, undo functionality, and activity logging.",
+        "testStrategy": "Complete the QA checklist and document any issues found during testing.",
+        "priority": "high",
+        "dependencies": [
+          13
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Deploy Admin Dashboard",
+        "description": "Deploy the completed admin dashboard to a hosting service.",
+        "details": "Choose a hosting service like Vercel or Netlify and deploy the React application. Ensure that the Supabase backend is correctly connected to the deployed frontend.",
+        "testStrategy": "Verify that the deployed application functions as expected in a production environment.",
+        "priority": "high",
+        "dependencies": [
+          14
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-02T21:43:13.283Z",
+      "updated": "2025-08-02T21:47:11.840Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
