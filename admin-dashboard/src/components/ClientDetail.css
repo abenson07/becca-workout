@@ -1,0 +1,114 @@
+.client-detail-page {
+  padding: 32px 48px;
+}
+
+.client-detail-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.client-detail-image {
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #222;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.client-image-placeholder {
+  text-align: center;
+  color: #888;
+}
+
+.client-detail-main {
+  flex: 2;
+}
+
+.client-detail-title h2 {
+  margin: 0 0 8px 0;
+}
+
+.client-trainers {
+  margin: 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trainer-avatar {
+  display: inline-block;
+  border: 1px solid #222;
+  border-radius: 50%;
+  padding: 4px 12px;
+  margin-right: 4px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.assign-btn {
+  border: 1px solid #222;
+  border-radius: 20px;
+  padding: 4px 16px;
+  background: #fff;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.client-detail-notes {
+  display: flex;
+  gap: 32px;
+  margin-top: 16px;
+}
+
+.client-detail-edit {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.edit-btn {
+  border: 1px solid #222;
+  border-radius: 20px;
+  padding: 8px 24px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.client-detail-workouts {
+  margin-top: 32px;
+}
+
+.trainer-workouts-block {
+  margin-bottom: 32px;
+}
+
+.trainer-workouts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.unassign-btn {
+  border: 1px solid #222;
+  border-radius: 20px;
+  padding: 4px 16px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.workouts-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.workouts-table th, .workouts-table td {
+  border: 1px solid #222;
+  padding: 8px 12px;
+  text-align: left;
+} 
