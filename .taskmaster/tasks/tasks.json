@@ -109,8 +109,99 @@
         "dependencies": [
           1
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "in-progress",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install React Router",
+            "description": "Use npm to install the React Router library into your project.",
+            "dependencies": [],
+            "details": "Open your terminal, navigate to your project directory, and run the command: `npm install react-router-dom` to install React Router. This library enables routing capabilities in your React application. ([reactrouter.com](https://reactrouter.com/start/data/installation?utm_source=openai))",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Set Up BrowserRouter in the Application",
+            "description": "Wrap your main application component with BrowserRouter to enable routing functionality.",
+            "dependencies": [],
+            "details": "In your main application file (e.g., App.js), import BrowserRouter from 'react-router-dom' and wrap your root component with it. This setup allows your application to handle routing. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create Placeholder Components for Each Route",
+            "description": "Define simple React components to serve as placeholders for each route in your application.",
+            "dependencies": [],
+            "details": "For each route you plan to implement, create a corresponding React component that returns a simple JSX element, such as a <div> with the route's name. This approach helps in organizing your application and testing routing functionality. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Define Routes Using Routes and Route Components",
+            "description": "Set up routing paths and associate them with the corresponding placeholder components.",
+            "dependencies": [],
+            "details": "In your main application component, import Routes and Route from 'react-router-dom'. Use the Routes component to define individual Route components, specifying the path and the element (placeholder component) to render for each route. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement Navigation Links Between Routes",
+            "description": "Add navigation links to allow users to switch between different routes in your application.",
+            "dependencies": [],
+            "details": "Import Link from 'react-router-dom' and use it to create navigation links in your application. Each Link component should have a 'to' attribute corresponding to the path of the route it navigates to. This setup enables users to navigate between different views without reloading the page. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Test Navigation Between Routes",
+            "description": "Verify that clicking on navigation links correctly renders the associated placeholder components.",
+            "dependencies": [],
+            "details": "Run your application and click on each navigation link to ensure that the correct placeholder component is displayed for each route. This step confirms that your routing setup is functioning as expected. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Implement Dynamic Routes with URL Parameters",
+            "description": "Set up routes that include dynamic segments to handle variable parts in the URL, such as client or trainer IDs.",
+            "dependencies": [],
+            "details": "Define routes with dynamic segments by using a colon followed by a variable name in the path (e.g., '/client/:id'). In the corresponding component, use the useParams hook from 'react-router-dom' to access the dynamic values. This approach allows your application to handle dynamic content based on the URL. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 8,
+            "title": "Create Navigation Links for Dynamic Routes",
+            "description": "Add navigation links that include dynamic parameters to navigate to specific client or trainer pages.",
+            "dependencies": [],
+            "details": "Use the Link component to create navigation links that include dynamic parameters in the 'to' attribute (e.g., 'to={`/client/${clientId}`}`). This setup enables users to navigate to specific client or trainer pages based on their IDs. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 9,
+            "title": "Implement a Not Found Route for Undefined Paths",
+            "description": "Set up a route to handle undefined paths and display a 'Page Not Found' message.",
+            "dependencies": [],
+            "details": "Add a Route component with a path of '*' and an element that displays a 'Page Not Found' message. This route acts as a catch-all for any undefined paths, providing a user-friendly error message when users navigate to a non-existent route. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 10,
+            "title": "Test All Routes and Navigation Links",
+            "description": "Ensure that all routes and navigation links work correctly, rendering the appropriate components and handling dynamic parameters as expected.",
+            "dependencies": [],
+            "details": "Navigate through your application, clicking on each navigation link and entering various URLs to test all routes, including dynamic and undefined paths. Verify that the correct components are rendered and that the application handles navigation smoothly. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
       },
       {
         "id": 4,
@@ -274,7 +365,7 @@
     ],
     "metadata": {
       "created": "2025-08-02T21:43:13.283Z",
-      "updated": "2025-08-02T21:53:18.346Z",
+      "updated": "2025-08-02T21:54:38.295Z",
       "description": "Tasks for master context"
     }
   }
