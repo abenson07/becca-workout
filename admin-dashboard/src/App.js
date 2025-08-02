@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import NavBar from './components/NavBar';
 import Home from './components/Home';
 import Clients from './components/Clients';
 import ClientDetail from './components/ClientDetail';
@@ -31,16 +32,7 @@ function MovementDetailWithParams() {
 function App() {
   return (
     <Router>
-      <nav>
-        <Link to="/">Home</Link> |{' '}
-        <Link to="/clients">Clients</Link> |{' '}
-        <Link to="/client/123">Client 123</Link> |{' '}
-        <Link to="/trainer">Trainers</Link> |{' '}
-        <Link to="/trainer/456">Trainer 456</Link> |{' '}
-        <Link to="/movement">Movements</Link> |{' '}
-        <Link to="/movement/789">Movement 789</Link> |{' '}
-        <Link to="/admin">Admin</Link>
-      </nav>
+      <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/clients" element={<Clients />} />
