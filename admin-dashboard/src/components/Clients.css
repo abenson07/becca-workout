@@ -31,4 +31,8 @@
 
 .clients-table th {
   font-weight: 600;
+}
+
+.clickable-row:hover {
+  background: #f3f3f3;
 } 

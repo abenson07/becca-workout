@@ -226,7 +226,7 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -252,7 +252,7 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -278,7 +278,7 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -361,11 +361,52 @@
         ],
         "status": "pending",
         "subtasks": []
+      },
+      {
+        "id": 16,
+        "title": "Build Client Detail View",
+        "description": "Implement the client detail page at /client/:id to display all relevant client information.",
+        "details": "Create a new React component for the client detail view that fetches client data based on the client ID from the URL. Use mock data to populate the view with client information including image, name, email, ID, date of birth, assigned trainers, training notes, and injury notes. Implement a section to display assigned trainers along with their workouts. Add UI elements for 'Edit Profile' and 'Assign/Unassign Trainer' buttons, ensuring they are functional but not yet connected to backend logic. Ensure that the Clients table rows are clickable and navigate to this detail view when clicked.",
+        "testStrategy": "Verify that the client detail view renders correctly with all client information displayed as per the wireframe. Check that the assigned trainers and their workouts are displayed correctly. Ensure that the 'Edit Profile' and 'Assign/Unassign Trainer' buttons are present and functional (UI only). Test the navigation from the Clients table to the client detail view to confirm it works as expected.",
+        "status": "pending",
+        "dependencies": [
+          3,
+          5
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 17,
+        "title": "Build Trainer Detail View",
+        "description": "Implement the trainer detail page at /trainer/:id to display all trainer information including image, name, email, ID, specialties, and assigned clients.",
+        "details": "Create a new React component for the trainer detail view that fetches trainer data based on the trainer ID from the URL. Use mock data to populate the view with trainer information such as image, name, email, ID, specialties, and a list of assigned clients along with their workouts. Implement UI elements for 'Edit Profile' and 'Assign/Unassign Client' buttons, ensuring they are functional but not yet connected to backend logic. Ensure the layout follows the provided wireframes and PRD specifications.",
+        "testStrategy": "Verify that the trainer detail view renders correctly with all trainer information displayed as per the wireframe. Check that the assigned clients and their workouts are displayed correctly. Ensure that the 'Edit Profile' and 'Assign/Unassign Client' buttons are present and functional (UI only). Test the routing to ensure that navigating to /trainer/:id correctly displays the relevant trainer's details.",
+        "status": "pending",
+        "dependencies": [
+          3,
+          7
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 18,
+        "title": "Build Movement Detail View",
+        "description": "Implement the movement detail page at /movement/:id to display all relevant movement information.",
+        "details": "Create a new React component for the movement detail view that fetches movement data based on the movement ID from the URL. The component should display all movement information including name, category, description, ID, profile picture, and usage across workouts. Additionally, implement a list that shows workouts using this movement. Include an 'Edit Movement' button that is functional in the UI but not yet connected to backend logic. Use mock data to populate the view as per the provided PRD and wireframes.",
+        "testStrategy": "Verify that the movement detail view renders correctly with all movement information displayed as per the wireframe. Ensure that the list of workouts using the movement is displayed correctly. Check that the 'Edit Movement' button is present and functional (UI only).",
+        "status": "pending",
+        "dependencies": [
+          9
+        ],
+        "priority": "medium",
+        "subtasks": []
       }
     ],
     "metadata": {
       "created": "2025-08-02T21:43:13.283Z",
-      "updated": "2025-08-02T22:09:29.745Z",
+      "updated": "2025-08-02T22:40:58.018Z",
       "description": "Tasks for master context"
     }
   }

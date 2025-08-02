@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Clients.css';
 
 const mockClients = Array.from({ length: 10 }).map((_, i) => ({
   firstName: 'Name here',
   lastName: 'Name here',
   email: 'Email@email.com',
-  id: '5616586',
+  id: (5616586 + i).toString(),
   profilePic: 'profile picture url',
   dob: 'date of birth',
   createdAt: 'Date here',
@@ -25,6 +26,7 @@ function Clients() {
   const [search, setSearch] = useState('');
   const [sortCol, setSortCol] = useState('');
   const [sortDir, setSortDir] = useState('asc');
+  const navigate = useNavigate();
 
   // Filter
   const filtered = mockClients.filter(row =>
@@ -79,7 +81,12 @@ function Clients() {
         </thead>
         <tbody>
           {sorted.map((c, i) => (
-            <tr key={i}>
+            <tr
+              key={i}
+              className="clickable-row"
+              onClick={() => navigate(`/client/${c.id}`)}
+              style={{ cursor: 'pointer' }}
+            >
               {columns.map(col => (
                 <td key={col.key}>{c[col.key]}</td>
               ))}
