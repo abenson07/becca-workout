@@ -9,7 +9,7 @@
         "testStrategy": "Verify that the project builds successfully and the initial React app runs without errors.",
         "priority": "medium",
         "dependencies": [],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -62,7 +62,7 @@
             "description": "Set up Git to track changes in your project files.",
             "dependencies": [],
             "details": "In your project directory, run `git init` to initialize a new Git repository. This command creates a .git directory that will track changes to your project files.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -71,7 +71,7 @@
             "description": "Set up a remote repository on GitHub to store your project's code online.",
             "dependencies": [],
             "details": "Log in to your GitHub account and click on the '+' icon in the top right corner, then select 'New repository'. Name your repository (e.g., 'my-app'), add a description, choose visibility (public or private), and click 'Create repository'.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -80,7 +80,7 @@
             "description": "Link your local Git repository to the remote GitHub repository and push your initial commit.",
             "dependencies": [],
             "details": "In your terminal, run the following commands:\n\n```\ngit remote add origin https://github.com/your-username/my-app.git\ngit branch -M main\ngit add .\ngit commit -m \"Initial commit\"\ngit push -u origin main\n```\n\nReplace 'your-username' with your GitHub username. These commands set up the remote connection, rename the default branch to 'main', stage all files, commit them with a message, and push the commit to GitHub. For more details, refer to the GitHub Docs on creating a repository. ([docs.github.com](https://docs.github.com/en/get-started/quickstart/hello-world?utm_source=openai))",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -274,7 +274,7 @@
     ],
     "metadata": {
       "created": "2025-08-02T21:43:13.283Z",
-      "updated": "2025-08-02T21:50:18.784Z",
+      "updated": "2025-08-02T21:53:18.346Z",
       "description": "Tasks for master context"
     }
   }
