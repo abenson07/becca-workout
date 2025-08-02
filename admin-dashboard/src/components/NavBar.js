@@ -1,17 +1,23 @@
-import { Link } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import './NavBar.css';
 
 function NavBar() {
+  const navigate = useNavigate();
   return (
-    <nav>
-      <Link to="/">Home</Link> |{' '}
-      <Link to="/clients">Clients</Link> |{' '}
-      <Link to="/client/123">Client 123</Link> |{' '}
-      <Link to="/trainer">Trainers</Link> |{' '}
-      <Link to="/trainer/456">Trainer 456</Link> |{' '}
-      <Link to="/movement">Movements</Link> |{' '}
-      <Link to="/movement/789">Movement 789</Link> |{' '}
-      <Link to="/admin">Admin</Link>
-    </nav>
+    <div className="navbar-container">
+      <div className="navbar-left">
+        <button className="logo-btn" onClick={() => navigate('/clients')}>Logo</button>
+      </div>
+      <div className="navbar-center">
+        <NavLink to="/clients" className={({ isActive }) => isActive ? 'nav-pill active' : 'nav-pill'}>Clients</NavLink>
+        <NavLink to="/trainer" className={({ isActive }) => isActive ? 'nav-pill active' : 'nav-pill'}>Trainers</NavLink>
+        <NavLink to="/movement" className={({ isActive }) => isActive ? 'nav-pill active' : 'nav-pill'}>Movements</NavLink>
+      </div>
+      <div className="navbar-right">
+        <NavLink to="/admin" className={({ isActive }) => isActive ? 'nav-pill' : 'nav-pill'}>Admin</NavLink>
+        <button className="nav-pill">Logout</button>
+      </div>
+    </div>
   );
 }
 

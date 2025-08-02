@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "tailwindcss": "^4.1.11",
     "task-master-ai": "^0.23.0"
   }
 }

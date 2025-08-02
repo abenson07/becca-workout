@@ -1,0 +1,51 @@
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+}
+
+.navbar-left {
+  flex: 1;
+}
+
+.navbar-center {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.navbar-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.logo-btn {
+  border: 1px solid #222;
+  border-radius: 20px;
+  padding: 6px 24px;
+  background: white;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.nav-pill {
+  border: 1px solid #222;
+  border-radius: 20px;
+  padding: 6px 24px;
+  background: white;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  color: #222;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-pill.active {
+  background: #222;
+  color: #fff;
+  font-weight: bold;
+} 

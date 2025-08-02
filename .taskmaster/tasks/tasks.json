@@ -109,7 +109,7 @@
         "dependencies": [
           1
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -135,7 +135,7 @@
             "description": "Define simple React components to serve as placeholders for each route in your application.",
             "dependencies": [],
             "details": "For each route you plan to implement, create a corresponding React component that returns a simple JSX element, such as a <div> with the route's name. This approach helps in organizing your application and testing routing functionality. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -144,7 +144,7 @@
             "description": "Set up routing paths and associate them with the corresponding placeholder components.",
             "dependencies": [],
             "details": "In your main application component, import Routes and Route from 'react-router-dom'. Use the Routes component to define individual Route components, specifying the path and the element (placeholder component) to render for each route. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -153,7 +153,7 @@
             "description": "Add navigation links to allow users to switch between different routes in your application.",
             "dependencies": [],
             "details": "Import Link from 'react-router-dom' and use it to create navigation links in your application. Each Link component should have a 'to' attribute corresponding to the path of the route it navigates to. This setup enables users to navigate between different views without reloading the page. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -162,7 +162,7 @@
             "description": "Verify that clicking on navigation links correctly renders the associated placeholder components.",
             "dependencies": [],
             "details": "Run your application and click on each navigation link to ensure that the correct placeholder component is displayed for each route. This step confirms that your routing setup is functioning as expected. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -171,7 +171,7 @@
             "description": "Set up routes that include dynamic segments to handle variable parts in the URL, such as client or trainer IDs.",
             "dependencies": [],
             "details": "Define routes with dynamic segments by using a colon followed by a variable name in the path (e.g., '/client/:id'). In the corresponding component, use the useParams hook from 'react-router-dom' to access the dynamic values. This approach allows your application to handle dynamic content based on the URL. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -180,7 +180,7 @@
             "description": "Add navigation links that include dynamic parameters to navigate to specific client or trainer pages.",
             "dependencies": [],
             "details": "Use the Link component to create navigation links that include dynamic parameters in the 'to' attribute (e.g., 'to={`/client/${clientId}`}`). This setup enables users to navigate to specific client or trainer pages based on their IDs. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -189,7 +189,7 @@
             "description": "Set up a route to handle undefined paths and display a 'Page Not Found' message.",
             "dependencies": [],
             "details": "Add a Route component with a path of '*' and an element that displays a 'Page Not Found' message. This route acts as a catch-all for any undefined paths, providing a user-friendly error message when users navigate to a non-existent route. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -198,7 +198,7 @@
             "description": "Ensure that all routes and navigation links work correctly, rendering the appropriate components and handling dynamic parameters as expected.",
             "dependencies": [],
             "details": "Navigate through your application, clicking on each navigation link and entering various URLs to test all routes, including dynamic and undefined paths. Verify that the correct components are rendered and that the application handles navigation smoothly. ([freecodecamp.org](https://www.freecodecamp.org/news/how-to-use-react-router-version-6/?utm_source=openai))",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -213,7 +213,7 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -365,7 +365,7 @@
     ],
     "metadata": {
       "created": "2025-08-02T21:43:13.283Z",
-      "updated": "2025-08-02T21:55:33.412Z",
+      "updated": "2025-08-02T22:09:29.745Z",
       "description": "Tasks for master context"
     }
   }
