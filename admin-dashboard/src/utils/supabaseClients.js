@@ -37,6 +37,63 @@ export const fetchClientById = async (clientId) => {
   }
 };
 
+export const createClient = async (clientData) => {
+  try {
+    const { data, error } = await supabase
+      .from('clients')
+      .insert(clientData)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error creating client:', err);
+    return { success: false, error: err.message };
+  }
+};
+
+export const updateClient = async (clientId, updateData) => {
+  try {
+    const { data, error } = await supabase
+      .from('clients')
+      .update(updateData)
+      .eq('id', clientId)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error updating client:', err);
+    return { success: false, error: err.message };
+  }
+};
+
+export const deleteClient = async (clientId) => {
+  try {
+    const { error } = await supabase
+      .from('clients')
+      .delete()
+      .eq('id', clientId);
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error('Error deleting client:', err);
+    return { success: false, error: err.message };
+  }
+};
+
 export const getClientsColumns = (data) => {
   if (!data || data.length === 0) return [];
   

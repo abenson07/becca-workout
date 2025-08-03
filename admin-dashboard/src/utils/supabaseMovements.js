@@ -37,6 +37,63 @@ export const fetchMovementById = async (movementId) => {
   }
 };
 
+export const createMovement = async (movementData) => {
+  try {
+    const { data, error } = await supabase
+      .from('movements')
+      .insert(movementData)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error creating movement:', err);
+    return { success: false, error: err.message };
+  }
+};
+
+export const updateMovement = async (movementId, updateData) => {
+  try {
+    const { data, error } = await supabase
+      .from('movements')
+      .update(updateData)
+      .eq('id', movementId)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error updating movement:', err);
+    return { success: false, error: err.message };
+  }
+};
+
+export const deleteMovement = async (movementId) => {
+  try {
+    const { error } = await supabase
+      .from('movements')
+      .delete()
+      .eq('id', movementId);
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error('Error deleting movement:', err);
+    return { success: false, error: err.message };
+  }
+};
+
 export const getMovementsColumns = (data) => {
   if (!data || data.length === 0) return [];
   

@@ -37,6 +37,63 @@ export const fetchTrainerById = async (trainerId) => {
   }
 };
 
+export const createTrainer = async (trainerData) => {
+  try {
+    const { data, error } = await supabase
+      .from('trainers')
+      .insert(trainerData)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error creating trainer:', err);
+    return { success: false, error: err.message };
+  }
+};
+
+export const updateTrainer = async (trainerId, updateData) => {
+  try {
+    const { data, error } = await supabase
+      .from('trainers')
+      .update(updateData)
+      .eq('id', trainerId)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error updating trainer:', err);
+    return { success: false, error: err.message };
+  }
+};
+
+export const deleteTrainer = async (trainerId) => {
+  try {
+    const { error } = await supabase
+      .from('trainers')
+      .delete()
+      .eq('id', trainerId);
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error('Error deleting trainer:', err);
+    return { success: false, error: err.message };
+  }
+};
+
 export const getTrainersColumns = (data) => {
   if (!data || data.length === 0) return [];
   
