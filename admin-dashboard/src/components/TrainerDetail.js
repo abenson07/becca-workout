@@ -1,91 +1,86 @@
 import React from 'react';
 import './ClientDetail.css';
+import Table from './Table';
 
 const mockTrainer = {
-  firstName: 'John',
-  lastName: 'Smith',
+  name: 'John Smith',
   email: 'john.smith@email.com',
-  id: '5616586',
-  image: '',
-  specialties: ['Strength', 'Cardio', 'Mobility', 'Nutrition', 'Rehab'],
-  bio: 'Meet our dedicated trainer! Passionate about helping clients achieve their fitness goals, they focus on personalized training plans that cater to individual preferences and needs. With a keen eye for what makes a gym experience enjoyable, they ensure every session is effective and motivating.',
-  certifications: [
-    'Certified Personal Trainer (CPT)',
-    'Nutrition Specialist (CNS)',
-    'Group Fitness Instructor (GFI)',
-    'Certified Strength and Conditioning Specialist (CSCS)',
-    'CPR and First Aid Certified',
-  ],
+  id: '1234567',
+  dob: '1985-05-10',
+  specialties: ['Strength', 'Mobility', 'Endurance'],
   clients: [
     {
-      name: 'Client name',
+      name: 'Client 1',
       workouts: [
-        { name: 'Workout name', numExercises: 32, status: 'Active' },
-        { name: 'Workout name', numExercises: 32, status: 'Active' },
-        { name: 'Workout name', numExercises: 32, status: 'Completed' },
+        { name: 'Workout X', numExercises: 6, status: 'Active' },
+        { name: 'Workout Y', numExercises: 4, status: 'Completed' },
       ],
     },
     {
-      name: 'Client name',
+      name: 'Client 2',
       workouts: [
-        { name: 'Workout name', numExercises: 32, status: 'Active' },
-        { name: 'Workout name', numExercises: 32, status: 'Active' },
+        { name: 'Workout Z', numExercises: 5, status: 'Active' },
       ],
     },
   ],
+  trainingNotes: 'Trainer notes go here. This can include their approach, philosophy, or anything relevant.',
+  injuryNotes: 'Trainer injury notes or considerations go here.',
 };
 
 function TrainerDetail() {
-  const t = mockTrainer;
   return (
-    <div className="client-detail-page">
-      <div className="client-detail-header">
-        <div className="client-detail-image">
-          <div className="client-image-placeholder">Image of Trainer</div>
+    <div className="client-detail-page px-12 py-8">
+      <div className="flex flex-row items-start justify-between mb-8 w-full">
+        {/* Image */}
+        <div className="border rounded w-48 h-48 flex items-center justify-center text-gray-400 text-center text-sm mr-8 min-w-48">
+          Image of trainer
         </div>
-        <div className="client-detail-main">
-          <div className="client-detail-title">
-            <h2>Trainer Name ({t.firstName} + {t.lastName})</h2>
-            <div>{t.email} &nbsp;&nbsp; ID {t.id}</div>
-            <div>Specialties: {t.specialties.join(', ')}</div>
-            <div style={{ marginTop: 8 }}>
-              <b>Bio</b><br />
-              {t.bio}
-            </div>
-            <div style={{ marginTop: 8 }}>
-              <b>Certifications</b><br />
-              <ul style={{ margin: 0, paddingLeft: 16 }}>
-                {t.certifications.map((c, i) => <li key={i}>{c}</li>)}
-              </ul>
-            </div>
+        {/* Info and specialties */}
+        <div className="flex-1">
+          <div className="text-lg font-semibold mb-1">Trainer Name ({mockTrainer.name})</div>
+          <div className="mb-1">{mockTrainer.email}</div>
+          <div className="mb-2">ID {mockTrainer.id} &nbsp; date of birth {mockTrainer.dob}</div>
+          <div className="flex flex-row items-center mb-4">
+            <span className="mr-2">Specialties:</span>
+            {mockTrainer.specialties.map((s, i) => (
+              <button key={i} className="border rounded-full px-4 py-1 mx-1 text-sm hover:bg-gray-100 transition">{s}</button>
+            ))}
+            <button className="border rounded-full px-4 py-1 mx-2 text-sm hover:bg-gray-100 transition">+ Assign client</button>
           </div>
         </div>
+        {/* Edit profile button */}
+        <div className="ml-8">
+          <button className="border rounded-full px-6 py-2 text-sm hover:bg-gray-100 transition">Edit profile</button>
+        </div>
       </div>
-      <div className="client-detail-workouts">
-        {t.clients.map((c, i) => (
-          <div key={i} className="trainer-workouts-block">
-            <div className="trainer-workouts-header">
-              <b>{c.name}</b>
-              <button className="edit-btn">New workout</button>
+      <div className="flex flex-row gap-16 w-full">
+        <div className="flex-1">
+          <div className="font-semibold mb-1">Trainer notes</div>
+          <div>{mockTrainer.trainingNotes}</div>
+        </div>
+        <div className="flex-1">
+          <div className="font-semibold mb-1">Injury Notes</div>
+          <div>{mockTrainer.injuryNotes}</div>
+        </div>
+      </div>
+      {/* Clients and their workouts */}
+      <div className="mt-12">
+        {mockTrainer.clients.map((c, i) => (
+          <div key={i} className="mb-8">
+            <div className="flex items-center mb-2">
+              <b className="mr-4">{c.name}</b>
+              <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">New workout</button>
             </div>
-            <table className="workouts-table">
-              <thead>
-                <tr>
-                  <th>Workout</th>
-                  <th>Number of exercises</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {c.workouts.map((w, j) => (
-                  <tr key={j}>
-                    <td>{w.name}</td>
-                    <td>{w.numExercises}</td>
-                    <td>{w.status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <Table
+              columns={[
+                { key: 'name', label: 'Workout' },
+                { key: 'numExercises', label: 'Number of exercises' },
+                { key: 'status', label: 'Status' },
+              ]}
+              data={c.workouts}
+              searchable={true}
+              sortable={true}
+            />
           </div>
         ))}
       </div>
