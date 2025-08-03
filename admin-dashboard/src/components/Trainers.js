@@ -1,37 +1,72 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchTrainersData } from '../utils/supabaseTrainers';
 import Table from './Table';
 
 const columns = [
-  { key: 'firstName', label: 'First Name' },
-  { key: 'lastName', label: 'Last Name' },
+  { key: 'first_name', label: 'First Name' },
+  { key: 'last_name', label: 'Last Name' },
   { key: 'email', label: 'Email' },
   { key: 'id', label: 'ID' },
-  { key: 'profilePic', label: 'profile picture url' },
+  { key: 'profile_pic', label: 'Profile Picture' },
   { key: 'specialties', label: 'Specialties' },
   { key: 'clients', label: 'Clients' },
-  { key: 'createdAt', label: 'Created at' },
+  { key: 'created_at', label: 'Created At' },
 ];
-
-const mockTrainers = Array.from({ length: 10 }).map((_, i) => ({
-  firstName: 'Name here',
-  lastName: 'Name here',
-  email: 'Email@email.com',
-  id: (5616586 + i).toString(),
-  profilePic: 'profile picture url',
-  specialties: 'List of specialties',
-  clients: 'Number of clients',
-  createdAt: 'Date here',
-}));
 
 function Trainers() {
   const navigate = useNavigate();
+  const [trainers, setTrainers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchTrainers();
+  }, []);
+
+  const fetchTrainers = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchTrainersData();
+      setTrainers(data);
+    } catch (err) {
+      console.error('Supabase error:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="clients-page px-12 py-8">
+        <h2>Trainers</h2>
+        <div className="text-center py-8">Loading trainers...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="clients-page px-12 py-8">
+        <h2>Trainers</h2>
+        <div className="text-red-500 py-4">Error loading trainers: {error}</div>
+        <button 
+          onClick={fetchTrainers}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="clients-page px-12 py-8">
-      <h2>Trainers</h2>
+      <h2>Trainers ({trainers.length})</h2>
       <Table
         columns={columns}
-        data={mockTrainers}
+        data={trainers}
         onRowClick={row => navigate(`/trainer/${row.id}`)}
         searchable={true}
         sortable={true}
