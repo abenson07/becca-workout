@@ -96,7 +96,7 @@
           1,
           "13"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -239,7 +239,7 @@
         "dependencies": [
           5
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -265,7 +265,7 @@
         "dependencies": [
           7
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -291,7 +291,7 @@
         "dependencies": [
           9
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -368,7 +368,7 @@
         "description": "Implement the client detail page at /client/:id to display all relevant client information.",
         "details": "Create a new React component for the client detail view that fetches client data based on the client ID from the URL. Use mock data to populate the view with client information including image, name, email, ID, date of birth, assigned trainers, training notes, and injury notes. Implement a section to display assigned trainers along with their workouts. Add UI elements for 'Edit Profile' and 'Assign/Unassign Trainer' buttons, ensuring they are functional but not yet connected to backend logic. Ensure that the Clients table rows are clickable and navigate to this detail view when clicked.",
         "testStrategy": "Verify that the client detail view renders correctly with all client information displayed as per the wireframe. Check that the assigned trainers and their workouts are displayed correctly. Ensure that the 'Edit Profile' and 'Assign/Unassign Trainer' buttons are present and functional (UI only). Test the navigation from the Clients table to the client detail view to confirm it works as expected.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           3,
           5
@@ -382,7 +382,7 @@
         "description": "Implement the trainer detail page at /trainer/:id to display all trainer information including image, name, email, ID, specialties, and assigned clients.",
         "details": "Create a new React component for the trainer detail view that fetches trainer data based on the trainer ID from the URL. Use mock data to populate the view with trainer information such as image, name, email, ID, specialties, and a list of assigned clients along with their workouts. Implement UI elements for 'Edit Profile' and 'Assign/Unassign Client' buttons, ensuring they are functional but not yet connected to backend logic. Ensure the layout follows the provided wireframes and PRD specifications.",
         "testStrategy": "Verify that the trainer detail view renders correctly with all trainer information displayed as per the wireframe. Check that the assigned clients and their workouts are displayed correctly. Ensure that the 'Edit Profile' and 'Assign/Unassign Client' buttons are present and functional (UI only). Test the routing to ensure that navigating to /trainer/:id correctly displays the relevant trainer's details.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           3,
           7
@@ -396,17 +396,127 @@
         "description": "Implement the movement detail page at /movement/:id to display all relevant movement information.",
         "details": "Create a new React component for the movement detail view that fetches movement data based on the movement ID from the URL. The component should display all movement information including name, category, description, ID, profile picture, and usage across workouts. Additionally, implement a list that shows workouts using this movement. Include an 'Edit Movement' button that is functional in the UI but not yet connected to backend logic. Use mock data to populate the view as per the provided PRD and wireframes.",
         "testStrategy": "Verify that the movement detail view renders correctly with all movement information displayed as per the wireframe. Ensure that the list of workouts using the movement is displayed correctly. Check that the 'Edit Movement' button is present and functional (UI only).",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           9
         ],
         "priority": "medium",
         "subtasks": []
+      },
+      {
+        "id": 19,
+        "title": "Set Up Database Joiner Tables for Workouts and Trainer/Client Relationships",
+        "description": "Create the exercises table to link movements to workouts with rep/set information, and the trainer_client_relationships table to link trainers and clients.",
+        "details": "Implement the exercises table in Supabase to store details about workouts, including fields for movement ID, workout ID, reps, and sets. Ensure foreign key relationships are established with the movements and workouts tables. Additionally, create the trainer_client_relationships table to establish a many-to-many relationship between trainers and clients, including fields for trainer ID and client ID. Ensure that both tables are properly indexed for performance and that all necessary constraints are applied to maintain data integrity.",
+        "testStrategy": "Verify that the exercises table is created with the correct schema, including foreign key relationships to movements and workouts. Check that the trainer_client_relationships table is created correctly and that it allows for the linking of trainers and clients. Perform tests to ensure that data can be inserted, updated, and deleted without violating any constraints.",
+        "status": "pending",
+        "dependencies": [
+          2,
+          9
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 20,
+        "title": "Implement Trainer Assignment Functionality",
+        "description": "Add the ability to assign clients to trainers and trainers to clients, and update trainer detail pages to show assigned clients with workout tables created by that trainer for each client.",
+        "details": "Implement a feature that allows admins to assign clients to trainers and vice versa. This will involve creating a user interface for selecting clients and trainers, as well as backend logic to handle the assignments. Update the trainer detail pages to display a list of assigned clients, including their workout tables. Ensure that the UI is intuitive and that the data is fetched correctly from the database. Consider using modals for assignment actions and ensure that the changes are reflected in the UI without requiring a full page refresh.",
+        "testStrategy": "Verify that clients can be successfully assigned to trainers and that this information is correctly stored in the database. Check that the trainer detail pages display the assigned clients and their respective workout tables accurately. Test the UI for usability and ensure that all interactions are smooth. Additionally, confirm that unassigning clients from trainers works as expected.",
+        "status": "pending",
+        "dependencies": [
+          16,
+          19
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 21,
+        "title": "Implement Workout Assignment Functionality",
+        "description": "Add 'New Workout' buttons in trainer detail pages that trigger the workout creation modal.",
+        "details": "Implement functionality to add 'New Workout' buttons on the trainer detail pages. These buttons should trigger the workout creation modal, which is built in Task 11. Ensure that the buttons are styled appropriately and positioned in a user-friendly manner. The modal should allow trainers to create new workouts, integrating seamlessly with the existing workout builder modal. Additionally, ensure that the data from the modal is correctly saved to the database and that the UI updates to reflect the new workouts created.",
+        "testStrategy": "Verify that the 'New Workout' buttons appear on the trainer detail pages and are functional. Test that clicking the button opens the workout creation modal. Ensure that workouts can be created through the modal and that the data is saved correctly in the database. Check that the trainer detail page updates to show the new workout after creation. Additionally, test for any UI/UX issues during the interaction with the modal.",
+        "status": "pending",
+        "dependencies": [
+          11,
+          20
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 22,
+        "title": "Implement Edit Workout Functionality",
+        "description": "Enable trainers to modify existing workouts by clicking on a workout row in the trainer detail tables, which will open the workout builder modal for editing.",
+        "details": "Implement functionality that allows users to click on a workout row in the trainer detail tables. This action should trigger the workout builder modal (developed in Task 11) to open in edit mode, pre-populating the modal fields with the selected workout's data. Ensure that the modal allows for modifications and that changes are saved back to the database. Consider implementing validation for the input fields and ensuring that the UI reflects any changes made to the workouts immediately after saving.",
+        "testStrategy": "Verify that clicking on a workout row opens the workout builder modal with the correct workout data pre-filled. Test that modifications made in the modal can be saved successfully and that the updated workout data is reflected in the trainer detail tables. Ensure that validation errors are displayed appropriately if invalid data is entered.",
+        "status": "pending",
+        "dependencies": [
+          11,
+          20
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 23,
+        "title": "Implement Cross-Linking for Trainer and Client Names",
+        "description": "Make trainer and client names clickable links in the UI (except in tables) that navigate to their respective detail pages.",
+        "details": "Add clickable links to trainer and client names throughout the UI where they appear (detail pages, lists, etc.) but exclude table headers and data cells. These links should navigate to the respective detail pages for easy navigation between related entities. Ensure the links are styled appropriately and provide clear visual indication that they are clickable.",
+        "testStrategy": "Verify that trainer and client names are clickable and navigate to the correct detail pages. Test that the links work from various locations in the UI and that they don't interfere with table functionality.",
+        "status": "pending",
+        "dependencies": [
+          16,
+          17
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 24,
+        "title": "Implement Workout Listing in Movement Details",
+        "description": "Show all workouts that contain a specific movement with rep/sets information from the exercises table.",
+        "details": "Update the movement detail page to display a list of all workouts that contain the specific movement. This should include rep/sets information from the exercises table. The list should be searchable and sortable, showing workout names, trainer information, and the specific rep/set details for that movement within each workout.",
+        "testStrategy": "Verify that the movement detail page shows all workouts containing the movement with correct rep/sets information. Test search and sort functionality for the workout list.",
+        "status": "pending",
+        "dependencies": [
+          19,
+          18
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 25,
+        "title": "Implement Admin Authentication and Management",
+        "description": "Add login/auth functionality and admin management including superadmin assignment, admin deletion, and password reset.",
+        "details": "Implement authentication system for admin access. Create admin management functionality including the ability to assign superadmin privileges, delete other admins, and reset passwords. This should include a login page, admin dashboard for user management, and proper role-based access control.",
+        "testStrategy": "Test login functionality, admin creation/deletion, superadmin assignment, and password reset features. Verify role-based access control works correctly.",
+        "status": "pending",
+        "dependencies": [
+          2
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 26,
+        "title": "Fix Navigation Active States",
+        "description": "Fix active states for navigation tabs - client tab should show active when in client detail, admin tab needs active state.",
+        "details": "Update the navigation bar to properly show active states for all tabs. The client tab should show as active when viewing client details, and the admin tab needs an active state implementation. Ensure all navigation states are visually consistent.",
+        "testStrategy": "Verify that navigation tabs show correct active states when navigating between different sections of the application.",
+        "status": "pending",
+        "dependencies": [
+          4
+        ],
+        "priority": "low",
+        "subtasks": []
       }
     ],
     "metadata": {
       "created": "2025-08-02T21:43:13.283Z",
-      "updated": "2025-08-02T22:40:58.018Z",
+      "updated": "2025-08-03T21:35:33.518Z",
       "description": "Tasks for master context"
     }
   }
