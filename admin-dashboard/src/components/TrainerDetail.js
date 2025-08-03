@@ -287,46 +287,48 @@ function TrainerDetail() {
       </div>
 
       {/* Workouts by unassigned clients */}
-      <div className="mt-12">
-        <h3 className="text-lg font-semibold mb-4">Other Workouts</h3>
-        {workoutsLoading ? (
-          <div className="text-center py-4">Loading workouts...</div>
-        ) : workouts.length === 0 ? (
-          <div className="text-center py-4 text-gray-500">No workouts found for this trainer</div>
-        ) : (() => {
-          // Filter out workouts from assigned clients
-          const assignedClientIds = associatedClients.map(client => client.id);
-          const unassignedWorkouts = workouts.filter(workout => !assignedClientIds.includes(workout.client_id));
-          
-          if (unassignedWorkouts.length === 0) {
-            return <div className="text-center py-4 text-gray-500">No other workouts found</div>;
-          }
+      {(() => {
+        // Filter out workouts from assigned clients
+        const assignedClientIds = associatedClients.map(client => client.id);
+        const unassignedWorkouts = workouts.filter(workout => !assignedClientIds.includes(workout.client_id));
+        
+        if (unassignedWorkouts.length === 0) {
+          return null; // Don't render anything if no unassigned workouts
+        }
 
-          return Object.entries(groupWorkoutsByClient(unassignedWorkouts)).map(([clientId, clientWorkouts]) => (
-            <div key={clientId} className="mb-8">
-              <div className="flex items-center mb-2">
-                <Link 
-                  to={`/client/${clientId}`}
-                  className="mr-4 font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-                >
-                  {clientNames[clientId] || `Client ${clientId}`} <span className="text-gray-500 text-sm">(not assigned)</span>
-                </Link>
-                <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">New workout</button>
-              </div>
-              <Table
-                columns={[
-                  { key: 'name', label: 'Workout' },
-                ]}
-                data={clientWorkouts.map(workout => ({
-                  name: workout.workout_name || 'Unnamed Workout'
-                }))}
-                searchable={true}
-                sortable={true}
-              />
-            </div>
-          ));
-        })()}
-      </div>
+        return (
+          <div className="mt-12">
+            <h3 className="text-lg font-semibold mb-4">Other Workouts</h3>
+            {workoutsLoading ? (
+              <div className="text-center py-4">Loading workouts...</div>
+            ) : (
+              Object.entries(groupWorkoutsByClient(unassignedWorkouts)).map(([clientId, clientWorkouts]) => (
+                <div key={clientId} className="mb-8">
+                  <div className="flex items-center mb-2">
+                    <Link 
+                      to={`/client/${clientId}`}
+                      className="mr-4 font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                    >
+                      {clientNames[clientId] || `Client ${clientId}`} <span className="text-gray-500 text-sm">(not assigned)</span>
+                    </Link>
+                    <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">New workout</button>
+                  </div>
+                  <Table
+                    columns={[
+                      { key: 'name', label: 'Workout' },
+                    ]}
+                    data={clientWorkouts.map(workout => ({
+                      name: workout.workout_name || 'Unnamed Workout'
+                    }))}
+                    searchable={true}
+                    sortable={true}
+                  />
+                </div>
+              ))
+            )}
+          </div>
+        );
+      })()}
 
       <TestModal 
         isOpen={isModalOpen} 

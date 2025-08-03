@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddEditModal from './AddEditModal';
 import ModalForm from './ModalForm';
 import ConfirmationModal from './ConfirmationModal';
 import { createClient, updateClient, deleteClient } from '../../utils/supabaseClients';
 import { createTrainer, updateTrainer, deleteTrainer } from '../../utils/supabaseTrainers';
 import { createMovement, updateMovement, deleteMovement } from '../../utils/supabaseMovements';
+import { supabase } from '../../supabaseClient';
 
 const TestModal = ({ 
   isOpen, 
@@ -12,11 +13,16 @@ const TestModal = ({
   entityType = 'client', 
   initialData = {},
   isAdd = false,
-  onSuccess = null
+  onSuccess = null,
+  onDelete = null
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [availableTrainers, setAvailableTrainers] = useState([]);
+  const [trainersLoading, setTrainersLoading] = useState(false);
+  const [assignedTrainers, setAssignedTrainers] = useState([]);
 
   const handleSubmit = async (formData) => {
     setIsLoading(true);
@@ -143,6 +149,124 @@ const TestModal = ({
     onClose();
   };
 
+  // Fetch available trainers for assignment
+  const fetchAvailableTrainers = async (search = '') => {
+    if (entityType !== 'trainer-assignment') return;
+    
+    try {
+      setTrainersLoading(true);
+      
+      // Get all trainers
+      let query = supabase
+        .from('trainers')
+        .select('id, first_name, last_name')
+        .order('first_name', { ascending: true });
+
+      // Add search filter if search term exists
+      if (search.trim()) {
+        query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        throw error;
+      }
+
+      // Filter out already assigned trainers
+      const assignedTrainerIds = assignedTrainers.map(trainer => trainer.id);
+      const filteredTrainers = data.filter(trainer => !assignedTrainerIds.includes(trainer.id));
+
+      // Limit to top 5
+      setAvailableTrainers(filteredTrainers.slice(0, 5));
+    } catch (err) {
+      console.error('Error fetching available trainers:', err);
+    } finally {
+      setTrainersLoading(false);
+    }
+  };
+
+  // Initialize assigned trainers when modal opens
+  useEffect(() => {
+    if (isOpen && entityType === 'trainer-assignment') {
+      setAssignedTrainers(initialData.associatedTrainers || []);
+    }
+  }, [isOpen, initialData.associatedTrainers]);
+
+  // Handle search input changes for trainer assignment
+  useEffect(() => {
+    if (isOpen && entityType === 'trainer-assignment') {
+      fetchAvailableTrainers(searchTerm);
+    }
+  }, [searchTerm, isOpen, assignedTrainers]);
+
+  // Handle assigning a trainer
+  const handleAssignTrainer = async (trainer) => {
+    try {
+      const { error } = await supabase
+        .from('trainer_client')
+        .insert({
+          trainer_id: trainer.id,
+          client_id: initialData.clientId
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state immediately
+      const updatedAssignedTrainers = [...assignedTrainers, trainer];
+      setAssignedTrainers(updatedAssignedTrainers);
+      
+      // Call the callback to refresh the parent component
+      if (onSuccess) {
+        onSuccess(trainer);
+      }
+      
+      // Refresh the available trainers list
+      fetchAvailableTrainers(searchTerm);
+      
+      // Clear any errors
+      setError(null);
+    } catch (err) {
+      console.error('Error assigning trainer:', err);
+      setError(err.message);
+    }
+  };
+
+  // Handle removing a trainer
+  const handleRemoveTrainer = async (trainerId) => {
+    try {
+      const { error } = await supabase
+        .from('trainer_client')
+        .delete()
+        .eq('trainer_id', trainerId)
+        .eq('client_id', initialData.clientId);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state immediately
+      const updatedAssignedTrainers = assignedTrainers.filter(trainer => trainer.id !== trainerId);
+      setAssignedTrainers(updatedAssignedTrainers);
+      
+      // Call the callback to refresh the parent component
+      if (onDelete) {
+        onDelete(trainerId);
+      }
+      
+      // Refresh the available trainers list
+      fetchAvailableTrainers(searchTerm);
+      
+      // Clear any errors
+      setError(null);
+    } catch (err) {
+      console.error('Error removing trainer:', err);
+      setError(err.message);
+    }
+  };
+
   const getDeleteMessage = () => {
     const entityName = entityType.charAt(0).toUpperCase() + entityType.slice(1);
     const displayName = initialData.first_name && initialData.last_name 
@@ -152,6 +276,111 @@ const TestModal = ({
     return `Are you sure you want to delete ${displayName}? This action cannot be undone.`;
   };
 
+  // Render trainer assignment modal
+  if (entityType === 'trainer-assignment') {
+    if (!isOpen) return null;
+    
+    return (
+      <div
+        className="fixed inset-0 bg-black flex items-center justify-center z-50 p-4"
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+        onClick={(e) => e.target === e.currentTarget && onClose()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="trainer-assignment-modal-title"
+      >
+        <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <h2 id="trainer-assignment-modal-title" className="text-xl font-semibold text-gray-900">
+              Trainers
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Close modal"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="p-6">
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-red-600 text-sm">{error}</p>
+              </div>
+            )}
+
+            {/* Assigned Trainers Section */}
+            <div className="mb-6">
+              {assignedTrainers.length === 0 ? (
+                <div className="text-center py-4 text-gray-500">No trainers assigned</div>
+              ) : (
+                <div className="space-y-2">
+                  {assignedTrainers.map((trainer) => (
+                    <div key={trainer.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <span className="font-medium">{trainer.first_name} {trainer.last_name}</span>
+                      <button
+                        onClick={() => handleRemoveTrainer(trainer.id)}
+                        className="text-red-500 hover:text-red-700 transition-colors"
+                        aria-label={`Remove ${trainer.first_name} ${trainer.last_name}`}
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Add Trainer Section */}
+            <div>
+              <h3 className="font-semibold mb-3">Add trainer</h3>
+              <input
+                type="text"
+                placeholder="search trainers...."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              
+              {trainersLoading ? (
+                <div className="text-center py-4 text-gray-500">Loading trainers...</div>
+              ) : availableTrainers.length === 0 ? (
+                <div className="text-center py-4 text-gray-500">
+                  {searchTerm ? 'No trainers found' : 'No available trainers'}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {availableTrainers.map((trainer) => (
+                    <div key={trainer.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <span className="font-medium">{trainer.first_name} {trainer.last_name}</span>
+                      <button
+                        onClick={() => handleAssignTrainer(trainer)}
+                        className="text-green-500 hover:text-green-700 transition-colors"
+                        aria-label={`Add ${trainer.first_name} ${trainer.last_name}`}
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render regular modal for other entity types
   return (
     <>
       <AddEditModal

@@ -14,6 +14,7 @@ function ClientDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTrainerAssignmentModalOpen, setIsTrainerAssignmentModalOpen] = useState(false);
   const [workouts, setWorkouts] = useState([]);
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [trainerNames, setTrainerNames] = useState({});
@@ -107,6 +108,24 @@ function ClientDetail() {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
+  };
+
+  const handleTrainerAssignmentClick = () => {
+    setIsTrainerAssignmentModalOpen(true);
+  };
+
+  const handleTrainerAssignmentClose = () => {
+    setIsTrainerAssignmentModalOpen(false);
+  };
+
+  const handleTrainerAssigned = (trainer) => {
+    // Refresh the associated trainers list
+    fetchAssociatedTrainers();
+  };
+
+  const handleTrainerRemoved = (trainerId) => {
+    // Refresh the associated trainers list
+    fetchAssociatedTrainers();
   };
 
   const handleSuccess = (updatedClient) => {
@@ -215,7 +234,10 @@ function ClientDetail() {
                     ))}
                   </div>
                 )}
-                <button className="border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition">
+                <button 
+                  onClick={handleTrainerAssignmentClick}
+                  className="border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition"
+                >
                   + Assign trainer
                 </button>
               </div>
@@ -293,46 +315,48 @@ function ClientDetail() {
       </div>
 
       {/* Workouts by unassigned trainers */}
-      <div className="mt-12">
-        <h3 className="text-lg font-semibold mb-4">Other Workouts</h3>
-        {workoutsLoading ? (
-          <div className="text-center py-4">Loading workouts...</div>
-        ) : workouts.length === 0 ? (
-          <div className="text-center py-4 text-gray-500">No workouts found for this client</div>
-        ) : (() => {
-          // Filter out workouts from assigned trainers
-          const assignedTrainerIds = associatedTrainers.map(trainer => trainer.id);
-          const unassignedWorkouts = workouts.filter(workout => !assignedTrainerIds.includes(workout.trainer_id));
-          
-          if (unassignedWorkouts.length === 0) {
-            return <div className="text-center py-4 text-gray-500">No other workouts found</div>;
-          }
+      {(() => {
+        // Filter out workouts from assigned trainers
+        const assignedTrainerIds = associatedTrainers.map(trainer => trainer.id);
+        const unassignedWorkouts = workouts.filter(workout => !assignedTrainerIds.includes(workout.trainer_id));
+        
+        if (unassignedWorkouts.length === 0) {
+          return null; // Don't render anything if no unassigned workouts
+        }
 
-          return Object.entries(groupWorkoutsByTrainer(unassignedWorkouts)).map(([trainerId, trainerWorkouts]) => (
-            <div key={trainerId} className="mb-8">
-              <div className="flex items-center mb-2">
-                <Link 
-                  to={`/trainer/${trainerId}`}
-                  className="mr-4 font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-                >
-                  {trainerNames[trainerId] || `Trainer ${trainerId}`} <span className="text-gray-500 text-sm">(not assigned)</span>
-                </Link>
-                <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">Unassign trainer</button>
-              </div>
-              <Table
-                columns={[
-                  { key: 'name', label: 'Workout' },
-                ]}
-                data={trainerWorkouts.map(workout => ({
-                  name: workout.workout_name || 'Unnamed Workout'
-                }))}
-                searchable={true}
-                sortable={true}
-              />
-            </div>
-          ));
-        })()}
-      </div>
+        return (
+          <div className="mt-12">
+            <h3 className="text-lg font-semibold mb-4">Other Workouts</h3>
+            {workoutsLoading ? (
+              <div className="text-center py-4">Loading workouts...</div>
+            ) : (
+              Object.entries(groupWorkoutsByTrainer(unassignedWorkouts)).map(([trainerId, trainerWorkouts]) => (
+                <div key={trainerId} className="mb-8">
+                  <div className="flex items-center mb-2">
+                    <Link 
+                      to={`/trainer/${trainerId}`}
+                      className="mr-4 font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                    >
+                      {trainerNames[trainerId] || `Trainer ${trainerId}`} <span className="text-gray-500 text-sm">(not assigned)</span>
+                    </Link>
+                    <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">Unassign trainer</button>
+                  </div>
+                  <Table
+                    columns={[
+                      { key: 'name', label: 'Workout' },
+                    ]}
+                    data={trainerWorkouts.map(workout => ({
+                      name: workout.workout_name || 'Unnamed Workout'
+                    }))}
+                    searchable={true}
+                    sortable={true}
+                  />
+                </div>
+              ))
+            )}
+          </div>
+        );
+      })()}
 
       <TestModal 
         isOpen={isModalOpen} 
@@ -341,6 +365,16 @@ function ClientDetail() {
         initialData={client}
         isAdd={false}
         onSuccess={handleSuccess}
+      />
+
+      <TestModal 
+        isOpen={isTrainerAssignmentModalOpen} 
+        onClose={handleTrainerAssignmentClose} 
+        entityType="trainer-assignment"
+        initialData={{ clientId: id, associatedTrainers }}
+        isAdd={true}
+        onSuccess={handleTrainerAssigned}
+        onDelete={handleTrainerRemoved}
       />
     </div>
   );
