@@ -93,6 +93,9 @@ function Movements() {
         entityType="movement"
         initialData={{}}
         isAdd={true}
+        onSuccess={() => {
+          fetchMovements(); // Refresh the movements list
+        }}
       />
     </div>
   );

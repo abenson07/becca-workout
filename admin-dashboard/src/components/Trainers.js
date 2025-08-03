@@ -95,6 +95,9 @@ function Trainers() {
         entityType="trainer"
         initialData={{}}
         isAdd={true}
+        onSuccess={() => {
+          fetchTrainers(); // Refresh the trainers list
+        }}
       />
     </div>
   );

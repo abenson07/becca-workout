@@ -205,6 +205,9 @@ function TrainerDetail() {
         entityType="trainer"
         initialData={trainer}
         isAdd={false}
+        onSuccess={(updatedTrainer) => {
+          setTrainer(updatedTrainer);
+        }}
       />
     </div>
   );

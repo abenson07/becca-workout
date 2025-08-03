@@ -93,6 +93,9 @@ function Clients() {
         entityType="client"
         initialData={{}}
         isAdd={true}
+        onSuccess={() => {
+          fetchClients(); // Refresh the clients list
+        }}
       />
     </div>
   );

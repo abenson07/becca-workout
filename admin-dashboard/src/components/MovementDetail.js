@@ -173,6 +173,9 @@ function MovementDetail() {
         entityType="movement"
         initialData={movement}
         isAdd={false}
+        onSuccess={(updatedMovement) => {
+          setMovement(updatedMovement);
+        }}
       />
     </div>
   );

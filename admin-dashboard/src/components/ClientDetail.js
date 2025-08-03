@@ -191,6 +191,9 @@ function ClientDetail() {
         entityType="client"
         initialData={client}
         isAdd={false}
+        onSuccess={(updatedClient) => {
+          setClient(updatedClient);
+        }}
       />
     </div>
   );
