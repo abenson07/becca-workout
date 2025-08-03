@@ -19,13 +19,6 @@ export const entityConfigs = {
         placeholder: 'Enter last name'
       },
       { 
-        key: 'email', 
-        label: 'Email', 
-        type: 'email', 
-        required: true,
-        placeholder: 'Enter email address'
-      },
-      { 
         key: 'date_of_birth', 
         label: 'Date of Birth', 
         type: 'date'
@@ -68,18 +61,6 @@ export const entityConfigs = {
         type: 'text', 
         required: true,
         placeholder: 'Enter last name'
-      },
-      { 
-        key: 'email', 
-        label: 'Email', 
-        type: 'email', 
-        required: true,
-        placeholder: 'Enter email address'
-      },
-      { 
-        key: 'date_of_birth', 
-        label: 'Date of Birth', 
-        type: 'date'
       },
       { 
         key: 'specialties', 
