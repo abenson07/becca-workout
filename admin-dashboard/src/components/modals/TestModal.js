@@ -620,98 +620,111 @@ const TestModal = ({
     if (!isOpen) return null;
     
     return (
-      <div
-        className="fixed inset-0 bg-black flex items-center justify-center z-50 p-4"
-        style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
-        onClick={(e) => e.target === e.currentTarget && onClose()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="workout-modal-title"
-      >
-        <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h2 id="workout-modal-title" className="text-xl font-semibold text-gray-900">
-              {isAdd ? 'Create New Workout' : 'Edit Workout'}
-            </h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-              aria-label="Close modal"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+      <>
+        <div
+          className="fixed inset-0 bg-black flex items-center justify-center z-50 p-4"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+          onClick={(e) => e.target === e.currentTarget && onClose()}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="workout-modal-title"
+        >
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 id="workout-modal-title" className="text-xl font-semibold text-gray-900">
+                {isAdd ? 'Create New Workout' : 'Edit Workout'}
+              </h2>
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+                aria-label="Close modal"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
 
-          {/* Content */}
-          <div className="p-6">
-            {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-                <p className="text-red-600 text-sm">{error}</p>
-              </div>
-            )}
-
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.target);
-              const workoutData = {
-                workout_name: formData.get('workout_name'),
-                ...(isAdd && {
-                  trainer_id: initialData.trainer_id,
-                  client_id: initialData.client_id
-                })
-              };
-              handleSubmit(workoutData);
-            }}>
-              <div className="mb-4">
-                <label htmlFor="workout_name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Workout Name
-                </label>
-                <input
-                  type="text"
-                  id="workout_name"
-                  name="workout_name"
-                  required
-                  defaultValue={!isAdd ? initialData.workout_name : ''}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter workout name..."
-                />
-              </div>
-
-              <div className="flex justify-between">
-                {!isAdd && onDelete && (
-                  <button
-                    type="button"
-                    onClick={handleDelete}
-                    className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
-                    disabled={isLoading}
-                  >
-                    Delete
-                  </button>
-                )}
-                <div className="flex space-x-3 ml-auto">
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isLoading ? (isAdd ? "Creating..." : "Saving...") : (isAdd ? "Create Workout" : "Save Changes")}
-                  </button>
+            {/* Content */}
+            <div className="p-6">
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                  <p className="text-red-600 text-sm">{error}</p>
                 </div>
-              </div>
-            </form>
+              )}
+
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const workoutData = {
+                  workout_name: formData.get('workout_name'),
+                  ...(isAdd && {
+                    trainer_id: initialData.trainer_id,
+                    client_id: initialData.client_id
+                  })
+                };
+                handleSubmit(workoutData);
+              }}>
+                <div className="mb-4">
+                  <label htmlFor="workout_name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Workout Name
+                  </label>
+                  <input
+                    type="text"
+                    id="workout_name"
+                    name="workout_name"
+                    required
+                    defaultValue={!isAdd ? initialData.workout_name : ''}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter workout name..."
+                  />
+                </div>
+
+                <div className="flex justify-between">
+                  {!isAdd && onDelete && (
+                    <button
+                      type="button"
+                      onClick={handleDelete}
+                      className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+                      disabled={isLoading}
+                    >
+                      Delete
+                    </button>
+                  )}
+                  <div className="flex space-x-3 ml-auto">
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoading ? (isAdd ? "Creating..." : "Saving...") : (isAdd ? "Create Workout" : "Save Changes")}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
+
+        <ConfirmationModal
+          isOpen={showDeleteConfirmation}
+          onClose={handleDeleteCancel}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Workout"
+          message="Are you sure you want to delete this workout? This action cannot be undone."
+          confirmText="Delete"
+          cancelText="Cancel"
+          isLoading={isLoading}
+        />
+      </>
     );
   }
 
