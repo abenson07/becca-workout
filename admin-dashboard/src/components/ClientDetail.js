@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './ClientDetail.css';
 import { fetchClientById } from '../utils/supabaseClients';
+import { fetchWorkoutsByClientId, groupWorkoutsByTrainer } from '../utils/supabaseWorkouts';
 import Table from './Table';
 import TestModal from './modals/TestModal';
 
@@ -12,6 +13,8 @@ function ClientDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [workouts, setWorkouts] = useState([]);
+  const [workoutsLoading, setWorkoutsLoading] = useState(false);
 
   const fetchClient = async () => {
     try {
@@ -29,9 +32,31 @@ function ClientDetail() {
     }
   };
 
+  const fetchWorkouts = async () => {
+    try {
+      setWorkoutsLoading(true);
+      const result = await fetchWorkoutsByClientId(id);
+      if (result.success) {
+        setWorkouts(result.data);
+      } else {
+        console.error('Error fetching workouts:', result.error);
+      }
+    } catch (err) {
+      console.error('Failed to fetch workouts:', err);
+    } finally {
+      setWorkoutsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchClient();
   }, [id]);
+
+  useEffect(() => {
+    if (client) {
+      fetchWorkouts();
+    }
+  }, [client]);
 
   const handleEditClick = () => {
     setIsModalOpen(true);
@@ -161,43 +186,32 @@ function ClientDetail() {
         </div>
       </div>
 
-      {/* Workouts by trainer - placeholder for now */}
+      {/* Workouts by trainer */}
       <div className="mt-12">
-        <div className="mb-8">
-          <div className="flex items-center mb-2">
-            <b className="mr-4">Trainer 1</b>
-            <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">Unassign trainer</button>
-          </div>
-          <Table
-            columns={[
-              { key: 'name', label: 'Workout' },
-              { key: 'numExercises', label: 'Number of exercises' },
-            ]}
-            data={[
-              { name: 'Workout A', numExercises: 5 },
-              { name: 'Workout B', numExercises: 3 },
-            ]}
-            searchable={true}
-            sortable={true}
-          />
-        </div>
-        <div className="mb-8">
-          <div className="flex items-center mb-2">
-            <b className="mr-4">Trainer 2</b>
-            <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">Unassign trainer</button>
-          </div>
-          <Table
-            columns={[
-              { key: 'name', label: 'Workout' },
-              { key: 'numExercises', label: 'Number of exercises' },
-            ]}
-            data={[
-              { name: 'Workout C', numExercises: 4 },
-            ]}
-            searchable={true}
-            sortable={true}
-          />
-        </div>
+        {workoutsLoading ? (
+          <div className="text-center py-4">Loading workouts...</div>
+        ) : workouts.length === 0 ? (
+          <div className="text-center py-4 text-gray-500">No workouts found for this client</div>
+        ) : (
+          Object.entries(groupWorkoutsByTrainer(workouts)).map(([trainerId, trainerWorkouts]) => (
+            <div key={trainerId} className="mb-8">
+              <div className="flex items-center mb-2">
+                <b className="mr-4">Trainer {trainerId}</b>
+                <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">Unassign trainer</button>
+              </div>
+              <Table
+                columns={[
+                  { key: 'name', label: 'Workout' },
+                ]}
+                data={trainerWorkouts.map(workout => ({
+                  name: workout.workout_name || 'Unnamed Workout'
+                }))}
+                searchable={true}
+                sortable={true}
+              />
+            </div>
+          ))
+        )}
       </div>
 
       <TestModal 
