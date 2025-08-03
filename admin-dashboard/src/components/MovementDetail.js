@@ -1,106 +1,157 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import './ClientDetail.css';
-
-const mockMovement = {
-  name: 'Movement name',
-  type: 'Type',
-  category: 'Category',
-  equipment: 'Equipment',
-  defaultUnit: 'Equipment',
-  weighted: 'Yes',
-  time: 'No',
-  primaryMuscle: 'Muscle, muscle',
-  secondaryMuscle: 'Muscle, muscle',
-  description: 'Meet our dedicated trainer! Passionate about helping clients achieve their fitness goals, they focus on personalized training plans that cater to individual preferences and needs. With a keen eye for what makes a gym experience enjoyable, they ensure every session is effective and motivating.',
-  instructions: 'Meet our dedicated trainer! Passionate about helping clients achieve their fitness goals, they focus on personalized training plans that cater to individual preferences and needs. With a keen eye for what makes a gym experience enjoyable, they ensure every session is effective and motivating.',
-  workouts: Array.from({ length: 8 }).map((_, i) => ({
-    exerciseId: (6519689 + i).toString(),
-    workoutName: 'Workout',
-    trainer: 'Trainer name',
-    client: 'Client name',
-    rep: 16,
-    sets: 3,
-  })),
-};
+import { fetchMovementById } from '../utils/supabaseMovements';
+import Table from './Table';
 
 function MovementDetail() {
-  const [search, setSearch] = useState('');
-  const m = mockMovement;
-  const filtered = m.workouts.filter(row =>
-    Object.values(row).some(val =>
-      String(val).toLowerCase().includes(search.toLowerCase())
-    )
-  );
+  const { id } = useParams();
+  const [movement, setMovement] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchMovement();
+  }, [id]);
+
+  const fetchMovement = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchMovementById(id);
+      setMovement(data);
+    } catch (err) {
+      console.error('Error fetching movement:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="client-detail-page px-12 py-8">
+        <div className="text-center py-8">Loading movement details...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="client-detail-page px-12 py-8">
+        <div className="text-red-500 py-4">Error loading movement: {error}</div>
+        <button 
+          onClick={fetchMovement}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (!movement) {
+    return (
+      <div className="client-detail-page px-12 py-8">
+        <div className="text-center py-8">Movement not found</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="client-detail-page">
-      <div className="client-detail-header">
-        <div className="client-detail-image">
-          <div className="client-image-placeholder">Image of movement</div>
-        </div>
-        <div className="client-detail-main">
-          <div className="client-detail-title">
-            <h2>{m.name}</h2>
-            <div>Type &nbsp; {m.type} &nbsp;&nbsp; Category &nbsp; {m.category}</div>
-            <div style={{ marginTop: 8 }}>
-              <b>Equipment required</b>: {m.equipment} &nbsp;&nbsp;
-              <b>Default Unit</b>: {m.defaultUnit}
-            </div>
-            <div style={{ marginTop: 8 }}>
-              <b>Weighted</b>: {m.weighted} &nbsp;&nbsp;
-              <b>Time?</b>: {m.time}
-            </div>
-            <div style={{ marginTop: 8 }}>
-              <b>Primary muscle group</b>: {m.primaryMuscle} &nbsp;&nbsp;
-              <b>Secondary muscle group</b>: {m.secondaryMuscle}
-            </div>
+    <div className="client-detail-page px-12 py-8">
+      {/* Header Section - 12 columns */}
+      <div className="grid grid-cols-12 gap-6 mb-8">
+        {/* Profile Image - 2 columns, 1:1 ratio */}
+        <div className="col-span-2">
+          <div className="aspect-square border rounded-lg flex items-center justify-center text-gray-400 text-center text-sm">
+            {movement.profile_picture_url ? (
+              <img src={movement.profile_picture_url} alt="Movement" className="w-full h-full object-cover rounded-lg" />
+            ) : (
+              'Image of movement'
+            )}
           </div>
         </div>
-        <div className="client-detail-main">
-          <div style={{ marginBottom: 8 }}>
-            <b>Description</b><br />
-            {m.description}
+        
+        {/* Content Area - 10 columns */}
+        <div className="col-span-10">
+          {/* Top Row - Name and Edit Button */}
+          <div className="flex justify-between items-start mb-6">
+            <div className="text-2xl font-semibold">
+              {movement.name}
+            </div>
+            <button className="border rounded-lg px-6 py-2 text-sm hover:bg-gray-100 transition">
+              Edit movement
+            </button>
           </div>
-          <div>
-            <b>Instructions</b><br />
-            {m.instructions}
+          
+          {/* Bottom Row - Movement Info and Details */}
+          <div className="grid grid-cols-10 gap-4">
+            {/* Movement Info - 3 columns */}
+            <div className="col-span-3">
+              <div className="text-gray-600 mb-4">
+                <span className="font-medium">Type:</span> {movement.type || 'Not specified'}
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <div className="text-sm font-medium text-gray-500">Category</div>
+                  <div className="text-sm">{movement.category || 'Not specified'}</div>
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-gray-500">Equipment</div>
+                  <div className="text-sm">{movement.equipment || 'None'}</div>
+                </div>
+              </div>
+              
+              <div className="w-full">
+                <div className="text-sm font-medium text-gray-500 mb-2">Muscle Groups</div>
+                <div className="text-sm mb-2">
+                  <span className="font-medium">Primary:</span> {movement.primary_muscle || 'Not specified'}
+                </div>
+                <div className="text-sm">
+                  <span className="font-medium">Secondary:</span> {movement.secondary_muscle || 'None'}
+                </div>
+              </div>
+            </div>
+            
+            {/* 1 column gap */}
+            <div className="col-span-1"></div>
+            
+            {/* Description - 2 columns */}
+            <div className="col-span-2">
+              <div className="font-semibold mb-2">Description</div>
+              <div className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm">
+                {movement.description || 'No description available'}
+              </div>
+            </div>
+            
+            {/* 1 column gap */}
+            <div className="col-span-1"></div>
+            
+            {/* Instructions - 2 columns */}
+            <div className="col-span-2">
+              <div className="font-semibold mb-2">Instructions</div>
+              <div className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm">
+                {movement.instructions || 'No instructions available'}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div className="client-detail-workouts">
-        <h3>Workouts</h3>
-        <div className="clients-controls">
-          <button className="clients-filter-btn">Filters</button>
-          <input
-            className="clients-search"
-            placeholder="Search"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
+
+      {/* Workouts table - placeholder for now */}
+      <div className="mt-12">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Workouts</h3>
+            <button className="border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition">
+              + Add to workout
+            </button>
+          </div>
+          <div className="text-gray-500 text-center py-8">
+            Workout data will be displayed here when connected to the workouts table
+          </div>
         </div>
-        <table className="workouts-table">
-          <thead>
-            <tr>
-              <th>Exercise ID</th>
-              <th>Workout Name</th>
-              <th>Trainer</th>
-              <th>Client</th>
-              <th>Rep</th>
-              <th>Sets</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((w, i) => (
-              <tr key={i}>
-                <td>{w.exerciseId}</td>
-                <td>{w.workoutName}</td>
-                <td>{w.trainer}</td>
-                <td>{w.client}</td>
-                <td>{w.rep}</td>
-                <td>{w.sets}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
   );

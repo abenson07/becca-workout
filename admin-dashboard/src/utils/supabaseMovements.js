@@ -18,6 +18,25 @@ export const fetchMovementsData = async () => {
   }
 };
 
+export const fetchMovementById = async (movementId) => {
+  try {
+    const { data, error } = await supabase
+      .from('movements')
+      .select('*')
+      .eq('id', movementId)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (err) {
+    console.error('Error fetching movement by ID:', err);
+    throw err;
+  }
+};
+
 export const getMovementsColumns = (data) => {
   if (!data || data.length === 0) return [];
   
