@@ -14,6 +14,7 @@ function TrainerDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isClientAssignmentModalOpen, setIsClientAssignmentModalOpen] = useState(false);
   const [workouts, setWorkouts] = useState([]);
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [clientNames, setClientNames] = useState({});
@@ -107,6 +108,24 @@ function TrainerDetail() {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
+  };
+
+  const handleClientAssignmentClick = () => {
+    setIsClientAssignmentModalOpen(true);
+  };
+
+  const handleClientAssignmentClose = () => {
+    setIsClientAssignmentModalOpen(false);
+  };
+
+  const handleClientAssigned = (client) => {
+    // Refresh the associated clients list
+    fetchAssociatedClients();
+  };
+
+  const handleClientRemoved = (clientId) => {
+    // Refresh the associated clients list
+    fetchAssociatedClients();
   };
 
   const handleSuccess = (updatedTrainer) => {
@@ -209,7 +228,10 @@ function TrainerDetail() {
                 ) : (
                   <span className="text-gray-500 text-sm">No specialties listed</span>
                 )}
-                <button className="border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition">
+                <button 
+                  onClick={handleClientAssignmentClick}
+                  className="border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition"
+                >
                   + Assign client
                 </button>
               </div>
@@ -337,6 +359,16 @@ function TrainerDetail() {
         initialData={trainer}
         isAdd={false}
         onSuccess={handleSuccess}
+      />
+
+      <TestModal 
+        isOpen={isClientAssignmentModalOpen} 
+        onClose={handleClientAssignmentClose} 
+        entityType="client-assignment"
+        initialData={{ trainerId: id, associatedClients }}
+        isAdd={true}
+        onSuccess={handleClientAssigned}
+        onDelete={handleClientRemoved}
       />
     </div>
   );

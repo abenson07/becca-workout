@@ -4,6 +4,7 @@ import './ClientDetail.css';
 import { fetchClientById, fetchTrainersByClientId } from '../utils/supabaseClients';
 import { fetchTrainerById } from '../utils/supabaseTrainers';
 import { fetchWorkoutsByClientId, groupWorkoutsByTrainer } from '../utils/supabaseWorkouts';
+import { supabase } from '../supabaseClient';
 import Table from './Table';
 import TestModal from './modals/TestModal';
 
@@ -126,6 +127,26 @@ function ClientDetail() {
   const handleTrainerRemoved = (trainerId) => {
     // Refresh the associated trainers list
     fetchAssociatedTrainers();
+  };
+
+  const handleUnassignTrainer = async (trainerId) => {
+    try {
+      const { error } = await supabase
+        .from('trainer_client')
+        .delete()
+        .eq('trainer_id', trainerId)
+        .eq('client_id', id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Refresh the associated trainers list
+      fetchAssociatedTrainers();
+    } catch (err) {
+      console.error('Error unassigning trainer:', err);
+      // You might want to show an error message to the user here
+    }
   };
 
   const handleSuccess = (updatedClient) => {
@@ -287,7 +308,12 @@ function ClientDetail() {
                   >
                     {trainer.first_name} {trainer.last_name}
                   </Link>
-                  <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">Unassign trainer</button>
+                  <button 
+                    onClick={() => handleUnassignTrainer(trainer.id)}
+                    className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition"
+                  >
+                    Unassign trainer
+                  </button>
                 </div>
                 {trainerWorkouts.length === 0 ? (
                   <div className="text-center py-4 text-gray-500">
@@ -339,7 +365,12 @@ function ClientDetail() {
                     >
                       {trainerNames[trainerId] || `Trainer ${trainerId}`} <span className="text-gray-500 text-sm">(not assigned)</span>
                     </Link>
-                    <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">Unassign trainer</button>
+                    <button 
+                      onClick={() => handleUnassignTrainer(trainerId)}
+                      className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition"
+                    >
+                      Unassign trainer
+                    </button>
                   </div>
                   <Table
                     columns={[

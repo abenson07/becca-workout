@@ -23,6 +23,9 @@ const TestModal = ({
   const [availableTrainers, setAvailableTrainers] = useState([]);
   const [trainersLoading, setTrainersLoading] = useState(false);
   const [assignedTrainers, setAssignedTrainers] = useState([]);
+  const [availableClients, setAvailableClients] = useState([]);
+  const [clientsLoading, setClientsLoading] = useState(false);
+  const [assignedClients, setAssignedClients] = useState([]);
 
   const handleSubmit = async (formData) => {
     setIsLoading(true);
@@ -193,12 +196,26 @@ const TestModal = ({
     }
   }, [isOpen, initialData.associatedTrainers]);
 
+  // Initialize assigned clients when modal opens
+  useEffect(() => {
+    if (isOpen && entityType === 'client-assignment') {
+      setAssignedClients(initialData.associatedClients || []);
+    }
+  }, [isOpen, initialData.associatedClients]);
+
   // Handle search input changes for trainer assignment
   useEffect(() => {
     if (isOpen && entityType === 'trainer-assignment') {
       fetchAvailableTrainers(searchTerm);
     }
   }, [searchTerm, isOpen, assignedTrainers]);
+
+  // Handle search input changes for client assignment
+  useEffect(() => {
+    if (isOpen && entityType === 'client-assignment') {
+      fetchAvailableClients(searchTerm);
+    }
+  }, [searchTerm, isOpen, assignedClients]);
 
   // Handle assigning a trainer
   const handleAssignTrainer = async (trainer) => {
@@ -263,6 +280,110 @@ const TestModal = ({
       setError(null);
     } catch (err) {
       console.error('Error removing trainer:', err);
+      setError(err.message);
+    }
+  };
+
+  // Fetch available clients for assignment
+  const fetchAvailableClients = async (search = '') => {
+    if (entityType !== 'client-assignment') return;
+    
+    try {
+      setClientsLoading(true);
+      
+      // Get all clients
+      let query = supabase
+        .from('clients')
+        .select('id, first_name, last_name')
+        .order('first_name', { ascending: true });
+
+      // Add search filter if search term exists
+      if (search.trim()) {
+        query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        throw error;
+      }
+
+      // Filter out already assigned clients
+      const assignedClientIds = assignedClients.map(client => client.id);
+      const filteredClients = data.filter(client => !assignedClientIds.includes(client.id));
+
+      // Limit to top 5
+      setAvailableClients(filteredClients.slice(0, 5));
+    } catch (err) {
+      console.error('Error fetching available clients:', err);
+    } finally {
+      setClientsLoading(false);
+    }
+  };
+
+  // Handle assigning a client
+  const handleAssignClient = async (client) => {
+    try {
+      const { error } = await supabase
+        .from('trainer_client')
+        .insert({
+          trainer_id: initialData.trainerId,
+          client_id: client.id
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state immediately
+      const updatedAssignedClients = [...assignedClients, client];
+      setAssignedClients(updatedAssignedClients);
+      
+      // Call the callback to refresh the parent component
+      if (onSuccess) {
+        onSuccess(client);
+      }
+      
+      // Refresh the available clients list
+      fetchAvailableClients(searchTerm);
+      
+      // Clear any errors
+      setError(null);
+    } catch (err) {
+      console.error('Error assigning client:', err);
+      setError(err.message);
+    }
+  };
+
+  // Handle removing a client
+  const handleRemoveClient = async (clientId) => {
+    try {
+      const { error } = await supabase
+        .from('trainer_client')
+        .delete()
+        .eq('trainer_id', initialData.trainerId)
+        .eq('client_id', clientId);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state immediately
+      const updatedAssignedClients = assignedClients.filter(client => client.id !== clientId);
+      setAssignedClients(updatedAssignedClients);
+      
+      // Call the callback to refresh the parent component
+      if (onDelete) {
+        onDelete(clientId);
+      }
+      
+      // Refresh the available clients list
+      fetchAvailableClients(searchTerm);
+      
+      // Clear any errors
+      setError(null);
+    } catch (err) {
+      console.error('Error removing client:', err);
       setError(err.message);
     }
   };
@@ -364,6 +485,110 @@ const TestModal = ({
                         onClick={() => handleAssignTrainer(trainer)}
                         className="text-green-500 hover:text-green-700 transition-colors"
                         aria-label={`Add ${trainer.first_name} ${trainer.last_name}`}
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render client assignment modal
+  if (entityType === 'client-assignment') {
+    if (!isOpen) return null;
+    
+    return (
+      <div
+        className="fixed inset-0 bg-black flex items-center justify-center z-50 p-4"
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+        onClick={(e) => e.target === e.currentTarget && onClose()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="client-assignment-modal-title"
+      >
+        <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <h2 id="client-assignment-modal-title" className="text-xl font-semibold text-gray-900">
+              Clients
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Close modal"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="p-6">
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-red-600 text-sm">{error}</p>
+              </div>
+            )}
+
+            {/* Assigned Clients Section */}
+            <div className="mb-6">
+              {assignedClients.length === 0 ? (
+                <div className="text-center py-4 text-gray-500">No clients assigned</div>
+              ) : (
+                <div className="space-y-2">
+                  {assignedClients.map((client) => (
+                    <div key={client.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <span className="font-medium">{client.first_name} {client.last_name}</span>
+                      <button
+                        onClick={() => handleRemoveClient(client.id)}
+                        className="text-red-500 hover:text-red-700 transition-colors"
+                        aria-label={`Remove ${client.first_name} ${client.last_name}`}
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Add Client Section */}
+            <div>
+              <h3 className="font-semibold mb-3">Add client</h3>
+              <input
+                type="text"
+                placeholder="search clients...."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              
+              {clientsLoading ? (
+                <div className="text-center py-4 text-gray-500">Loading clients...</div>
+              ) : availableClients.length === 0 ? (
+                <div className="text-center py-4 text-gray-500">
+                  {searchTerm ? 'No clients found' : 'No available clients'}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {availableClients.map((client) => (
+                    <div key={client.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <span className="font-medium">{client.first_name} {client.last_name}</span>
+                      <button
+                        onClick={() => handleAssignClient(client)}
+                        className="text-green-500 hover:text-green-700 transition-colors"
+                        aria-label={`Add ${client.first_name} ${client.last_name}`}
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
