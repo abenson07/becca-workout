@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './ClientDetail.css';
 import { fetchClientById } from '../utils/supabaseClients';
+import { fetchTrainerById } from '../utils/supabaseTrainers';
 import { fetchWorkoutsByClientId, groupWorkoutsByTrainer } from '../utils/supabaseWorkouts';
 import Table from './Table';
 import TestModal from './modals/TestModal';
@@ -15,6 +16,7 @@ function ClientDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [workouts, setWorkouts] = useState([]);
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
+  const [trainerNames, setTrainerNames] = useState({});
 
   const fetchClient = async () => {
     try {
@@ -38,6 +40,8 @@ function ClientDetail() {
       const result = await fetchWorkoutsByClientId(id);
       if (result.success) {
         setWorkouts(result.data);
+        // Fetch trainer names for all unique trainer IDs
+        await fetchTrainerNames(result.data);
       } else {
         console.error('Error fetching workouts:', result.error);
       }
@@ -45,6 +49,26 @@ function ClientDetail() {
       console.error('Failed to fetch workouts:', err);
     } finally {
       setWorkoutsLoading(false);
+    }
+  };
+
+  const fetchTrainerNames = async (workoutsData) => {
+    try {
+      const uniqueTrainerIds = [...new Set(workoutsData.map(workout => workout.trainer_id))];
+      const trainerNamesMap = {};
+      
+      for (const trainerId of uniqueTrainerIds) {
+        const result = await fetchTrainerById(trainerId);
+        if (result.success) {
+          trainerNamesMap[trainerId] = `${result.data.first_name} ${result.data.last_name}`;
+        } else {
+          trainerNamesMap[trainerId] = `Trainer ${trainerId}`;
+        }
+      }
+      
+      setTrainerNames(trainerNamesMap);
+    } catch (err) {
+      console.error('Failed to fetch trainer names:', err);
     }
   };
 
@@ -196,7 +220,7 @@ function ClientDetail() {
           Object.entries(groupWorkoutsByTrainer(workouts)).map(([trainerId, trainerWorkouts]) => (
             <div key={trainerId} className="mb-8">
               <div className="flex items-center mb-2">
-                <b className="mr-4">Trainer {trainerId}</b>
+                <b className="mr-4">{trainerNames[trainerId] || `Trainer ${trainerId}`}</b>
                 <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">Unassign trainer</button>
               </div>
               <Table
