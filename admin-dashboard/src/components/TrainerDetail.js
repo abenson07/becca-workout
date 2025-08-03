@@ -432,8 +432,8 @@ function TrainerDetail() {
         onClose={handleWorkoutCreationClose} 
         entityType="workout"
         initialData={{ 
-          trainerId: id, 
-          clientId: selectedClientForWorkout?.id 
+          trainer_id: id, 
+          client_id: selectedClientForWorkout?.id 
         }}
         isAdd={true}
         onSuccess={handleWorkoutCreated}
