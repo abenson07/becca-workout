@@ -1,6 +1,5 @@
 import { supabase } from '../supabaseClient';
 
-
 export const fetchClientsData = async () => {
   try {
     const { data, error } = await supabase
@@ -15,6 +14,25 @@ export const fetchClientsData = async () => {
     return data;
   } catch (err) {
     console.error('Error fetching clients:', err);
+    throw err;
+  }
+};
+
+export const fetchClientById = async (clientId) => {
+  try {
+    const { data, error } = await supabase
+      .from('clients')
+      .select('*')
+      .eq('id', clientId)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (err) {
+    console.error('Error fetching client by ID:', err);
     throw err;
   }
 };

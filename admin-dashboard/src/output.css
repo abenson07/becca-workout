@@ -871,6 +871,9 @@
   .h-auto {
     height: auto;
   }
+  .h-full {
+    height: 100%;
+  }
   .h-lh {
     height: 1lh;
   }
@@ -2307,6 +2310,9 @@
   }
   .text-gray-400 {
     color: var(--color-gray-400);
+  }
+  .text-gray-500 {
+    color: var(--color-gray-500);
   }
   .text-red-500 {
     color: var(--color-red-500);

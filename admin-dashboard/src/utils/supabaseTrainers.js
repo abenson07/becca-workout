@@ -18,6 +18,25 @@ export const fetchTrainersData = async () => {
   }
 };
 
+export const fetchTrainerById = async (trainerId) => {
+  try {
+    const { data, error } = await supabase
+      .from('trainers')
+      .select('*')
+      .eq('id', trainerId)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (err) {
+    console.error('Error fetching trainer by ID:', err);
+    throw err;
+  }
+};
+
 export const getTrainersColumns = (data) => {
   if (!data || data.length === 0) return [];
   
