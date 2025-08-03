@@ -3,12 +3,14 @@ import { useParams } from 'react-router-dom';
 import './ClientDetail.css';
 import { fetchClientById } from '../utils/supabaseClients';
 import Table from './Table';
+import TestModal from './modals/TestModal';
 
 function ClientDetail() {
   const { id } = useParams();
   const [client, setClient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchClient();
@@ -25,6 +27,14 @@ function ClientDetail() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEditClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
   };
 
   if (loading) {
@@ -79,7 +89,10 @@ function ClientDetail() {
             <div className="text-2xl font-semibold">
               {client.first_name} {client.last_name}
             </div>
-            <button className="border rounded-lg px-6 py-2 text-sm hover:bg-gray-100 transition">
+            <button 
+              onClick={handleEditClick}
+              className="border rounded-lg px-6 py-2 text-sm hover:bg-gray-100 transition"
+            >
               Edit profile
             </button>
           </div>
@@ -172,6 +185,13 @@ function ClientDetail() {
           />
         </div>
       </div>
+      <TestModal 
+        isOpen={isModalOpen} 
+        onClose={handleModalClose} 
+        entityType="client"
+        initialData={client}
+        isAdd={false}
+      />
     </div>
   );
 }
