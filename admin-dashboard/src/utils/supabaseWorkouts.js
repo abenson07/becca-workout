@@ -119,9 +119,58 @@ export const createWorkout = async (workoutData) => {
       throw error;
     }
 
+      return { success: true, data };
+} catch (err) {
+  console.error('Error creating workout:', err);
+  return { success: false, error: err.message };
+}
+};
+
+/**
+ * Update an existing workout
+ * @param {string} workoutId - The ID of the workout to update
+ * @param {Object} updateData - The workout data to update
+ * @returns {Promise<{success: boolean, data?: any, error?: string}>}
+ */
+export const updateWorkout = async (workoutId, updateData) => {
+  try {
+    const { data, error } = await supabase
+      .from('workouts')
+      .update(updateData)
+      .eq('id', workoutId)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
     return { success: true, data };
   } catch (err) {
-    console.error('Error creating workout:', err);
+    console.error('Error updating workout:', err);
+    return { success: false, error: err.message };
+  }
+};
+
+/**
+ * Delete a workout
+ * @param {string} workoutId - The ID of the workout to delete
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+export const deleteWorkout = async (workoutId) => {
+  try {
+    const { error } = await supabase
+      .from('workouts')
+      .delete()
+      .eq('id', workoutId);
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error('Error deleting workout:', err);
     return { success: false, error: err.message };
   }
 }; 

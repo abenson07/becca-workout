@@ -161,6 +161,20 @@ export const entityConfigs = {
         placeholder: 'Enter image URL'
       }
     ]
+  },
+  
+  workout: {
+    title: 'Edit Workout',
+    addTitle: 'Add New Workout',
+    fields: [
+      { 
+        key: 'workout_name', 
+        label: 'Workout Name', 
+        type: 'text', 
+        required: true,
+        placeholder: 'Enter workout name'
+      }
+    ]
   }
 };
 

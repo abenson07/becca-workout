@@ -16,7 +16,9 @@ function TrainerDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClientAssignmentModalOpen, setIsClientAssignmentModalOpen] = useState(false);
   const [isWorkoutCreationModalOpen, setIsWorkoutCreationModalOpen] = useState(false);
+  const [isWorkoutEditModalOpen, setIsWorkoutEditModalOpen] = useState(false);
   const [selectedClientForWorkout, setSelectedClientForWorkout] = useState(null);
+  const [selectedWorkout, setSelectedWorkout] = useState(null);
   const [workouts, setWorkouts] = useState([]);
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [clientNames, setClientNames] = useState({});
@@ -141,6 +143,26 @@ function TrainerDetail() {
   };
 
   const handleWorkoutCreated = (workout) => {
+    // Refresh the workouts list
+    fetchWorkouts();
+  };
+
+  const handleWorkoutRowClick = (workout) => {
+    setSelectedWorkout(workout);
+    setIsWorkoutEditModalOpen(true);
+  };
+
+  const handleWorkoutEditClose = () => {
+    setIsWorkoutEditModalOpen(false);
+    setSelectedWorkout(null);
+  };
+
+  const handleWorkoutUpdated = (workout) => {
+    // Refresh the workouts list
+    fetchWorkouts();
+  };
+
+  const handleWorkoutDeleted = (workoutId) => {
     // Refresh the workouts list
     fetchWorkouts();
   };
@@ -321,10 +343,12 @@ function TrainerDetail() {
                       { key: 'name', label: 'Workout' },
                     ]}
                     data={clientWorkouts.map(workout => ({
+                      ...workout,
                       name: workout.workout_name || 'Unnamed Workout'
                     }))}
                     searchable={true}
                     sortable={true}
+                    onRowClick={handleWorkoutRowClick}
                   />
                 )}
               </div>
@@ -370,10 +394,12 @@ function TrainerDetail() {
                       { key: 'name', label: 'Workout' },
                     ]}
                     data={clientWorkouts.map(workout => ({
+                      ...workout,
                       name: workout.workout_name || 'Unnamed Workout'
                     }))}
                     searchable={true}
                     sortable={true}
+                    onRowClick={handleWorkoutRowClick}
                   />
                 </div>
               ))
@@ -411,6 +437,16 @@ function TrainerDetail() {
         }}
         isAdd={true}
         onSuccess={handleWorkoutCreated}
+      />
+
+      <TestModal 
+        isOpen={isWorkoutEditModalOpen} 
+        onClose={handleWorkoutEditClose} 
+        entityType="workout"
+        initialData={selectedWorkout}
+        isAdd={false}
+        onSuccess={handleWorkoutUpdated}
+        onDelete={handleWorkoutDeleted}
       />
     </div>
   );
