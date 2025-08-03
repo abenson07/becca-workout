@@ -3,12 +3,14 @@ import { useParams } from 'react-router-dom';
 import './ClientDetail.css';
 import { fetchMovementById } from '../utils/supabaseMovements';
 import Table from './Table';
+import TestModal from './modals/TestModal';
 
 function MovementDetail() {
   const { id } = useParams();
   const [movement, setMovement] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchMovement();
@@ -25,6 +27,14 @@ function MovementDetail() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEditClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
   };
 
   if (loading) {
@@ -79,7 +89,10 @@ function MovementDetail() {
             <div className="text-2xl font-semibold">
               {movement.name}
             </div>
-            <button className="border rounded-lg px-6 py-2 text-sm hover:bg-gray-100 transition">
+            <button 
+              onClick={handleEditClick}
+              className="border rounded-lg px-6 py-2 text-sm hover:bg-gray-100 transition"
+            >
               Edit movement
             </button>
           </div>
@@ -153,6 +166,14 @@ function MovementDetail() {
           </div>
         </div>
       </div>
+
+      <TestModal 
+        isOpen={isModalOpen} 
+        onClose={handleModalClose} 
+        entityType="movement"
+        initialData={movement}
+        isAdd={false}
+      />
     </div>
   );
 }

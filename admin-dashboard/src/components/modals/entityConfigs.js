@@ -44,8 +44,9 @@ export const entityConfigs = {
       },
       { 
         key: 'profile_picture_url', 
-        label: 'Profile Picture', 
-        type: 'file'
+        label: 'Profile Picture URL', 
+        type: 'text',
+        placeholder: 'Enter image URL'
       }
     ]
   },
@@ -100,8 +101,9 @@ export const entityConfigs = {
       },
       { 
         key: 'profile_picture_url', 
-        label: 'Profile Picture', 
-        type: 'file'
+        label: 'Profile Picture URL', 
+        type: 'text',
+        placeholder: 'Enter image URL'
       }
     ]
   },
@@ -173,8 +175,9 @@ export const entityConfigs = {
       },
       { 
         key: 'profile_picture_url', 
-        label: 'Movement Image', 
-        type: 'file'
+        label: 'Movement Image URL', 
+        type: 'text',
+        placeholder: 'Enter image URL'
       }
     ]
   }

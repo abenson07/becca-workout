@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchMovementsData } from '../utils/supabaseMovements';
 import Table from './Table';
+import TestModal from './modals/TestModal';
 
 const columns = [
   { key: 'name', label: 'Name' },
@@ -17,6 +18,7 @@ function Movements() {
   const [movements, setMovements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchMovements();
@@ -33,6 +35,14 @@ function Movements() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAddClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
   };
 
   if (loading) {
@@ -61,13 +71,28 @@ function Movements() {
 
   return (
     <div className="clients-page px-12 py-8">
-      <h2>Movements ({movements.length})</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2>Movements ({movements.length})</h2>
+        <button 
+          onClick={handleAddClick}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+        >
+          + Add Movement
+        </button>
+      </div>
       <Table
         columns={columns}
         data={movements}
         onRowClick={row => navigate(`/movement/${row.id}`)}
         searchable={true}
         sortable={true}
+      />
+      <TestModal 
+        isOpen={isModalOpen} 
+        onClose={handleModalClose} 
+        entityType="movement"
+        initialData={{}}
+        isAdd={true}
       />
     </div>
   );
