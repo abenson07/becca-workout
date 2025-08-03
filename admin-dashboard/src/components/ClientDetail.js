@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import './ClientDetail.css';
-import { fetchClientById } from '../utils/supabaseClients';
+import { fetchClientById, fetchTrainersByClientId } from '../utils/supabaseClients';
 import { fetchTrainerById } from '../utils/supabaseTrainers';
 import { fetchWorkoutsByClientId, groupWorkoutsByTrainer } from '../utils/supabaseWorkouts';
 import Table from './Table';
@@ -17,6 +17,8 @@ function ClientDetail() {
   const [workouts, setWorkouts] = useState([]);
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [trainerNames, setTrainerNames] = useState({});
+  const [associatedTrainers, setAssociatedTrainers] = useState([]);
+  const [trainersLoading, setTrainersLoading] = useState(false);
 
   const fetchClient = async () => {
     try {
@@ -76,9 +78,26 @@ function ClientDetail() {
     fetchClient();
   }, [id]);
 
+  const fetchAssociatedTrainers = async () => {
+    try {
+      setTrainersLoading(true);
+      const result = await fetchTrainersByClientId(id);
+      if (result.success) {
+        setAssociatedTrainers(result.data);
+      } else {
+        console.error('Error fetching associated trainers:', result.error);
+      }
+    } catch (err) {
+      console.error('Failed to fetch associated trainers:', err);
+    } finally {
+      setTrainersLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (client) {
       fetchWorkouts();
+      fetchAssociatedTrainers();
     }
   }, [client]);
 
@@ -179,6 +198,23 @@ function ClientDetail() {
               
               <div className="w-full">
                 <div className="text-sm font-medium text-gray-500 mb-2">Trainers</div>
+                {trainersLoading ? (
+                  <div className="text-sm text-gray-500">Loading trainers...</div>
+                ) : associatedTrainers.length === 0 ? (
+                  <div className="text-sm text-gray-500 mb-2">No trainers assigned</div>
+                ) : (
+                  <div className="mb-2">
+                    {associatedTrainers.map((trainer) => (
+                      <Link
+                        key={trainer.id}
+                        to={`/trainer/${trainer.id}`}
+                        className="block text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors mb-1"
+                      >
+                        {trainer.first_name} {trainer.last_name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
                 <button className="border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition">
                   + Assign trainer
                 </button>
@@ -210,21 +246,76 @@ function ClientDetail() {
         </div>
       </div>
 
-      {/* Workouts by trainer */}
+      {/* Workouts by assigned trainers */}
       <div className="mt-12">
+        <h3 className="text-lg font-semibold mb-4">Assigned Trainers</h3>
+        {trainersLoading ? (
+          <div className="text-center py-4">Loading assigned trainers...</div>
+        ) : associatedTrainers.length === 0 ? (
+          <div className="text-center py-4 text-gray-500">No trainers assigned to this client</div>
+        ) : (
+          associatedTrainers.map((trainer) => {
+            const trainerWorkouts = workouts.filter(workout => workout.trainer_id === trainer.id);
+            return (
+              <div key={trainer.id} className="mb-8">
+                <div className="flex items-center mb-2">
+                  <Link 
+                    to={`/trainer/${trainer.id}`}
+                    className="mr-4 font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                  >
+                    {trainer.first_name} {trainer.last_name}
+                  </Link>
+                  <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">Unassign trainer</button>
+                </div>
+                {trainerWorkouts.length === 0 ? (
+                  <div className="text-center py-4 text-gray-500">
+                    No workouts found for this trainer
+                    <button className="block mx-auto mt-2 border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition">
+                      + Add workout
+                    </button>
+                  </div>
+                ) : (
+                  <Table
+                    columns={[
+                      { key: 'name', label: 'Workout' },
+                    ]}
+                    data={trainerWorkouts.map(workout => ({
+                      name: workout.workout_name || 'Unnamed Workout'
+                    }))}
+                    searchable={true}
+                    sortable={true}
+                  />
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Workouts by unassigned trainers */}
+      <div className="mt-12">
+        <h3 className="text-lg font-semibold mb-4">Other Workouts</h3>
         {workoutsLoading ? (
           <div className="text-center py-4">Loading workouts...</div>
         ) : workouts.length === 0 ? (
           <div className="text-center py-4 text-gray-500">No workouts found for this client</div>
-        ) : (
-          Object.entries(groupWorkoutsByTrainer(workouts)).map(([trainerId, trainerWorkouts]) => (
+        ) : (() => {
+          // Filter out workouts from assigned trainers
+          const assignedTrainerIds = associatedTrainers.map(trainer => trainer.id);
+          const unassignedWorkouts = workouts.filter(workout => !assignedTrainerIds.includes(workout.trainer_id));
+          
+          if (unassignedWorkouts.length === 0) {
+            return <div className="text-center py-4 text-gray-500">No other workouts found</div>;
+          }
+
+          return Object.entries(groupWorkoutsByTrainer(unassignedWorkouts)).map(([trainerId, trainerWorkouts]) => (
             <div key={trainerId} className="mb-8">
               <div className="flex items-center mb-2">
                 <Link 
                   to={`/trainer/${trainerId}`}
                   className="mr-4 font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
                 >
-                  {trainerNames[trainerId] || `Trainer ${trainerId}`}
+                  {trainerNames[trainerId] || `Trainer ${trainerId}`} <span className="text-gray-500 text-sm">(not assigned)</span>
                 </Link>
                 <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">Unassign trainer</button>
               </div>
@@ -239,8 +330,8 @@ function ClientDetail() {
                 sortable={true}
               />
             </div>
-          ))
-        )}
+          ));
+        })()}
       </div>
 
       <TestModal 

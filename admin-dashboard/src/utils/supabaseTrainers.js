@@ -94,6 +94,38 @@ export const deleteTrainer = async (trainerId) => {
   }
 };
 
+/**
+ * Fetch clients associated with a specific trainer
+ * @param {string} trainerId - The ID of the trainer
+ * @returns {Promise<{success: boolean, data?: any[], error?: string}>}
+ */
+export const fetchClientsByTrainerId = async (trainerId) => {
+  try {
+    const { data, error } = await supabase
+      .from('trainer_client')
+      .select(`
+        client_id,
+        clients (
+          id,
+          first_name,
+          last_name
+        )
+      `)
+      .eq('trainer_id', trainerId);
+
+    if (error) {
+      throw error;
+    }
+
+    // Extract client data from the joined result
+    const clients = data.map(item => item.clients).filter(Boolean);
+    return { success: true, data: clients };
+  } catch (err) {
+    console.error('Error fetching clients by trainer ID:', err);
+    return { success: false, error: err.message };
+  }
+};
+
 export const getTrainersColumns = (data) => {
   if (!data || data.length === 0) return [];
   
