@@ -30,10 +30,10 @@ export const fetchClientById = async (clientId) => {
       throw error;
     }
 
-    return data;
+    return { success: true, data };
   } catch (err) {
     console.error('Error fetching client by ID:', err);
-    throw err;
+    return { success: false, error: err.message };
   }
 };
 

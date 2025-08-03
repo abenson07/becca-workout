@@ -30,10 +30,10 @@ export const fetchMovementById = async (movementId) => {
       throw error;
     }
 
-    return data;
+    return { success: true, data };
   } catch (err) {
     console.error('Error fetching movement by ID:', err);
-    throw err;
+    return { success: false, error: err.message };
   }
 };
 

@@ -30,10 +30,10 @@ export const fetchTrainerById = async (trainerId) => {
       throw error;
     }
 
-    return data;
+    return { success: true, data };
   } catch (err) {
     console.error('Error fetching trainer by ID:', err);
-    throw err;
+    return { success: false, error: err.message };
   }
 };
 
