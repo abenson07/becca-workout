@@ -59,54 +59,92 @@ function TrainerDetail() {
 
   return (
     <div className="client-detail-page px-12 py-8">
-      <div className="flex flex-row items-start justify-between mb-8 w-full">
-        {/* Image */}
-        <div className="border rounded w-48 h-48 flex items-center justify-center text-gray-400 text-center text-sm mr-8 min-w-48">
-          {trainer.profile_picture_url ? (
-            <img src={trainer.profile_picture_url} alt="Trainer" className="w-full h-full object-cover rounded" />
-          ) : (
-            'Image of trainer'
-          )}
-        </div>
-        {/* Info and specialties */}
-        <div className="flex-1">
-          <div className="text-lg font-semibold mb-1">
-            {trainer.first_name} {trainer.last_name}
-          </div>
-          <div className="mb-1">{trainer.email}</div>
-          <div className="mb-2">
-            ID {trainer.id} &nbsp; 
-            {trainer.date_of_birth && `date of birth ${trainer.date_of_birth}`}
-          </div>
-          <div className="flex flex-row items-center mb-4">
-            <span className="mr-2">Specialties:</span>
-            {trainer.specialties ? (
-              trainer.specialties.split(',').map((specialty, i) => (
-                <button key={i} className="border rounded-full px-4 py-1 mx-1 text-sm hover:bg-gray-100 transition">
-                  {specialty.trim()}
-                </button>
-              ))
+      {/* Header Section - 12 columns */}
+      <div className="grid grid-cols-12 gap-6 mb-8">
+        {/* Profile Image - 2 columns, 1:1 ratio */}
+        <div className="col-span-2">
+          <div className="aspect-square border rounded-lg flex items-center justify-center text-gray-400 text-center text-sm">
+            {trainer.profile_picture_url ? (
+              <img src={trainer.profile_picture_url} alt="Trainer" className="w-full h-full object-cover rounded-lg" />
             ) : (
-              <span className="text-gray-500">No specialties listed</span>
+              'Image of trainer'
             )}
-            <button className="border rounded-full px-4 py-1 mx-2 text-sm hover:bg-gray-100 transition">+ Assign client</button>
           </div>
         </div>
-        {/* Edit profile button */}
-        <div className="ml-8">
-          <button className="border rounded-full px-6 py-2 text-sm hover:bg-gray-100 transition">Edit profile</button>
+        
+        {/* Content Area - 10 columns */}
+        <div className="col-span-10">
+          {/* Top Row - Name and Edit Button */}
+          <div className="flex justify-between items-start mb-6">
+            <div className="text-2xl font-semibold">
+              {trainer.first_name} {trainer.last_name}
+            </div>
+            <button className="border rounded-lg px-6 py-2 text-sm hover:bg-gray-100 transition">
+              Edit profile
+            </button>
+          </div>
+          
+          {/* Bottom Row - Profile Info and Notes */}
+          <div className="grid grid-cols-10 gap-4">
+            {/* Profile Info - 3 columns */}
+            <div className="col-span-3">
+              <div className="text-gray-600 mb-4">{trainer.email}</div>
+              
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <div className="text-sm font-medium text-gray-500">ID</div>
+                  <div className="text-sm">{trainer.id}</div>
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-gray-500">Date of birth</div>
+                  <div className="text-sm">{trainer.date_of_birth || 'Not provided'}</div>
+                </div>
+              </div>
+              
+              <div className="w-full">
+                <div className="text-sm font-medium text-gray-500 mb-2">Specialties</div>
+                {trainer.specialties ? (
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {trainer.specialties.split(',').map((specialty, i) => (
+                      <button key={i} className="border rounded-full px-3 py-1 text-xs hover:bg-gray-100 transition">
+                        {specialty.trim()}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-gray-500 text-sm">No specialties listed</span>
+                )}
+                <button className="border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition">
+                  + Assign client
+                </button>
+              </div>
+            </div>
+            
+            {/* 1 column gap */}
+            <div className="col-span-1"></div>
+            
+            {/* Training Notes - 2 columns */}
+            <div className="col-span-2">
+              <div className="font-semibold mb-2">Bio</div>
+              <div className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm">
+                {trainer.bio || 'No bio available'}
+              </div>
+            </div>
+            
+            {/* 1 column gap */}
+            <div className="col-span-1"></div>
+            
+            {/* Injury Notes - 2 columns */}
+            <div className="col-span-2">
+              <div className="font-semibold mb-2">Certifications</div>
+              <div className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm">
+                {trainer.certifications || 'No certifications available'}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="flex flex-row gap-16 w-full">
-        <div className="flex-1">
-          <div className="font-semibold mb-1">Trainer notes</div>
-          <div>{trainer.training_notes || 'No trainer notes available'}</div>
-        </div>
-        <div className="flex-1">
-          <div className="font-semibold mb-1">Injury Notes</div>
-          <div>{trainer.injury_notes || 'No injury notes available'}</div>
-        </div>
-      </div>
+
       {/* Clients and their workouts - placeholder for now */}
       <div className="mt-12">
         <div className="mb-8">
