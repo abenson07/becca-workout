@@ -9,6 +9,7 @@ import Movements from './components/Movements';
 import MovementDetail from './components/MovementDetail';
 import Admin from './components/Admin';
 import './App.css';
+import './output.css';
 
 function NotFound() {
   return <div>Page Not Found</div>;
