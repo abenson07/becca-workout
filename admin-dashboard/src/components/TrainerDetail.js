@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './ClientDetail.css';
 import { fetchTrainerById } from '../utils/supabaseTrainers';
+import { fetchClientById } from '../utils/supabaseClients';
+import { fetchWorkoutsByTrainerId, groupWorkoutsByClient } from '../utils/supabaseWorkouts';
 import Table from './Table';
 import TestModal from './modals/TestModal';
 
@@ -12,6 +14,9 @@ function TrainerDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [workouts, setWorkouts] = useState([]);
+  const [workoutsLoading, setWorkoutsLoading] = useState(false);
+  const [clientNames, setClientNames] = useState({});
 
   const fetchTrainer = async () => {
     try {
@@ -29,9 +34,53 @@ function TrainerDetail() {
     }
   };
 
+  const fetchWorkouts = async () => {
+    try {
+      setWorkoutsLoading(true);
+      const result = await fetchWorkoutsByTrainerId(id);
+      if (result.success) {
+        setWorkouts(result.data);
+        // Fetch client names for all unique client IDs
+        await fetchClientNames(result.data);
+      } else {
+        console.error('Error fetching workouts:', result.error);
+      }
+    } catch (err) {
+      console.error('Failed to fetch workouts:', err);
+    } finally {
+      setWorkoutsLoading(false);
+    }
+  };
+
+  const fetchClientNames = async (workoutsData) => {
+    try {
+      const uniqueClientIds = [...new Set(workoutsData.map(workout => workout.client_id))];
+      const clientNamesMap = {};
+      
+      for (const clientId of uniqueClientIds) {
+        const result = await fetchClientById(clientId);
+        if (result.success) {
+          clientNamesMap[clientId] = `${result.data.first_name} ${result.data.last_name}`;
+        } else {
+          clientNamesMap[clientId] = `Client ${clientId}`;
+        }
+      }
+      
+      setClientNames(clientNamesMap);
+    } catch (err) {
+      console.error('Failed to fetch client names:', err);
+    }
+  };
+
   useEffect(() => {
     fetchTrainer();
   }, [id]);
+
+  useEffect(() => {
+    if (trainer) {
+      fetchWorkouts();
+    }
+  }, [trainer]);
 
   const handleEditClick = () => {
     setIsModalOpen(true);
@@ -172,45 +221,32 @@ function TrainerDetail() {
         </div>
       </div>
 
-      {/* Clients and their workouts - placeholder for now */}
+      {/* Clients and their workouts */}
       <div className="mt-12">
-        <div className="mb-8">
-          <div className="flex items-center mb-2">
-            <b className="mr-4">Client 1</b>
-            <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">New workout</button>
-          </div>
-          <Table
-            columns={[
-              { key: 'name', label: 'Workout' },
-              { key: 'numExercises', label: 'Number of exercises' },
-              { key: 'status', label: 'Status' },
-            ]}
-            data={[
-              { name: 'Workout X', numExercises: 6, status: 'Active' },
-              { name: 'Workout Y', numExercises: 4, status: 'Completed' },
-            ]}
-            searchable={true}
-            sortable={true}
-          />
-        </div>
-        <div className="mb-8">
-          <div className="flex items-center mb-2">
-            <b className="mr-4">Client 2</b>
-            <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">New workout</button>
-          </div>
-          <Table
-            columns={[
-              { key: 'name', label: 'Workout' },
-              { key: 'numExercises', label: 'Number of exercises' },
-              { key: 'status', label: 'Status' },
-            ]}
-            data={[
-              { name: 'Workout Z', numExercises: 5, status: 'Active' },
-            ]}
-            searchable={true}
-            sortable={true}
-          />
-        </div>
+        {workoutsLoading ? (
+          <div className="text-center py-4">Loading workouts...</div>
+        ) : workouts.length === 0 ? (
+          <div className="text-center py-4 text-gray-500">No workouts found for this trainer</div>
+        ) : (
+          Object.entries(groupWorkoutsByClient(workouts)).map(([clientId, clientWorkouts]) => (
+            <div key={clientId} className="mb-8">
+              <div className="flex items-center mb-2">
+                <b className="mr-4">{clientNames[clientId] || `Client ${clientId}`}</b>
+                <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">New workout</button>
+              </div>
+              <Table
+                columns={[
+                  { key: 'name', label: 'Workout' },
+                ]}
+                data={clientWorkouts.map(workout => ({
+                  name: workout.workout_name || 'Unnamed Workout'
+                }))}
+                searchable={true}
+                sortable={true}
+              />
+            </div>
+          ))
+        )}
       </div>
 
       <TestModal 
