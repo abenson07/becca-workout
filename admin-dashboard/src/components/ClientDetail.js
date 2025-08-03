@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import './ClientDetail.css';
 import { fetchClientById } from '../utils/supabaseClients';
 import { fetchTrainerById } from '../utils/supabaseTrainers';
@@ -220,7 +220,12 @@ function ClientDetail() {
           Object.entries(groupWorkoutsByTrainer(workouts)).map(([trainerId, trainerWorkouts]) => (
             <div key={trainerId} className="mb-8">
               <div className="flex items-center mb-2">
-                <b className="mr-4">{trainerNames[trainerId] || `Trainer ${trainerId}`}</b>
+                <Link 
+                  to={`/trainer/${trainerId}`}
+                  className="mr-4 font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                >
+                  {trainerNames[trainerId] || `Trainer ${trainerId}`}
+                </Link>
                 <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">Unassign trainer</button>
               </div>
               <Table

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import './ClientDetail.css';
 import { fetchTrainerById } from '../utils/supabaseTrainers';
 import { fetchClientById } from '../utils/supabaseClients';
@@ -231,7 +231,12 @@ function TrainerDetail() {
           Object.entries(groupWorkoutsByClient(workouts)).map(([clientId, clientWorkouts]) => (
             <div key={clientId} className="mb-8">
               <div className="flex items-center mb-2">
-                <b className="mr-4">{clientNames[clientId] || `Client ${clientId}`}</b>
+                <Link 
+                  to={`/client/${clientId}`}
+                  className="mr-4 font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                >
+                  {clientNames[clientId] || `Client ${clientId}`}
+                </Link>
                 <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">New workout</button>
               </div>
               <Table
