@@ -204,14 +204,14 @@ const TestModal = ({
     if (isOpen && entityType === 'trainer-assignment') {
       setAssignedTrainers(initialData.associatedTrainers || []);
     }
-  }, [isOpen, initialData.associatedTrainers]);
+  }, [isOpen, entityType]);
 
   // Initialize assigned clients when modal opens
   useEffect(() => {
     if (isOpen && entityType === 'client-assignment') {
       setAssignedClients(initialData.associatedClients || []);
     }
-  }, [isOpen, initialData.associatedClients]);
+  }, [isOpen, entityType]);
 
   // Handle search input changes for trainer assignment
   useEffect(() => {
