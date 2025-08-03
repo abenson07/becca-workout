@@ -101,3 +101,27 @@ export const groupWorkoutsByClient = (workouts) => {
 
   return sortedGrouped;
 }; 
+
+/**
+ * Create a new workout
+ * @param {Object} workoutData - The workout data including name, trainer_id, and client_id
+ * @returns {Promise<{success: boolean, data?: any, error?: string}>}
+ */
+export const createWorkout = async (workoutData) => {
+  try {
+    const { data, error } = await supabase
+      .from('workouts')
+      .insert(workoutData)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error creating workout:', err);
+    return { success: false, error: err.message };
+  }
+}; 

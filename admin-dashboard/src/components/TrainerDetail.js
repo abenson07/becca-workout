@@ -15,6 +15,8 @@ function TrainerDetail() {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClientAssignmentModalOpen, setIsClientAssignmentModalOpen] = useState(false);
+  const [isWorkoutCreationModalOpen, setIsWorkoutCreationModalOpen] = useState(false);
+  const [selectedClientForWorkout, setSelectedClientForWorkout] = useState(null);
   const [workouts, setWorkouts] = useState([]);
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [clientNames, setClientNames] = useState({});
@@ -126,6 +128,21 @@ function TrainerDetail() {
   const handleClientRemoved = (clientId) => {
     // Refresh the associated clients list
     fetchAssociatedClients();
+  };
+
+  const handleWorkoutCreationClick = (client) => {
+    setSelectedClientForWorkout(client);
+    setIsWorkoutCreationModalOpen(true);
+  };
+
+  const handleWorkoutCreationClose = () => {
+    setIsWorkoutCreationModalOpen(false);
+    setSelectedClientForWorkout(null);
+  };
+
+  const handleWorkoutCreated = (workout) => {
+    // Refresh the workouts list
+    fetchWorkouts();
   };
 
   const handleSuccess = (updatedTrainer) => {
@@ -281,12 +298,20 @@ function TrainerDetail() {
                   >
                     {client.first_name} {client.last_name}
                   </Link>
-                  <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">New workout</button>
+                  <button 
+                    onClick={() => handleWorkoutCreationClick(client)}
+                    className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition"
+                  >
+                    New workout
+                  </button>
                 </div>
                 {clientWorkouts.length === 0 ? (
                   <div className="text-center py-4 text-gray-500">
                     No workouts found for this client
-                    <button className="block mx-auto mt-2 border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition">
+                    <button 
+                      onClick={() => handleWorkoutCreationClick(client)}
+                      className="block mx-auto mt-2 border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition"
+                    >
                       + Add workout
                     </button>
                   </div>
@@ -333,7 +358,12 @@ function TrainerDetail() {
                     >
                       {clientNames[clientId] || `Client ${clientId}`} <span className="text-gray-500 text-sm">(not assigned)</span>
                     </Link>
-                    <button className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition">New workout</button>
+                    <button 
+                      onClick={() => handleWorkoutCreationClick({ id: clientId })}
+                      className="border rounded-full px-3 py-1 text-xs ml-2 hover:bg-gray-100 transition"
+                    >
+                      New workout
+                    </button>
                   </div>
                   <Table
                     columns={[
@@ -369,6 +399,18 @@ function TrainerDetail() {
         isAdd={true}
         onSuccess={handleClientAssigned}
         onDelete={handleClientRemoved}
+      />
+
+      <TestModal 
+        isOpen={isWorkoutCreationModalOpen} 
+        onClose={handleWorkoutCreationClose} 
+        entityType="workout"
+        initialData={{ 
+          trainerId: id, 
+          clientId: selectedClientForWorkout?.id 
+        }}
+        isAdd={true}
+        onSuccess={handleWorkoutCreated}
       />
     </div>
   );

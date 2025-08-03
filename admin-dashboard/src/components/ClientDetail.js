@@ -16,6 +16,8 @@ function ClientDetail() {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTrainerAssignmentModalOpen, setIsTrainerAssignmentModalOpen] = useState(false);
+  const [isWorkoutCreationModalOpen, setIsWorkoutCreationModalOpen] = useState(false);
+  const [selectedTrainerForWorkout, setSelectedTrainerForWorkout] = useState(null);
   const [workouts, setWorkouts] = useState([]);
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [trainerNames, setTrainerNames] = useState({});
@@ -147,6 +149,21 @@ function ClientDetail() {
       console.error('Error unassigning trainer:', err);
       // You might want to show an error message to the user here
     }
+  };
+
+  const handleWorkoutCreationClick = (trainer) => {
+    setSelectedTrainerForWorkout(trainer);
+    setIsWorkoutCreationModalOpen(true);
+  };
+
+  const handleWorkoutCreationClose = () => {
+    setIsWorkoutCreationModalOpen(false);
+    setSelectedTrainerForWorkout(null);
+  };
+
+  const handleWorkoutCreated = (workout) => {
+    // Refresh the workouts list
+    fetchWorkouts();
   };
 
   const handleSuccess = (updatedClient) => {
@@ -318,7 +335,10 @@ function ClientDetail() {
                 {trainerWorkouts.length === 0 ? (
                   <div className="text-center py-4 text-gray-500">
                     No workouts found for this trainer
-                    <button className="block mx-auto mt-2 border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition">
+                    <button 
+                      onClick={() => handleWorkoutCreationClick(trainer)}
+                      className="block mx-auto mt-2 border rounded-full px-4 py-1 text-sm hover:bg-gray-100 transition"
+                    >
                       + Add workout
                     </button>
                   </div>
@@ -406,6 +426,18 @@ function ClientDetail() {
         isAdd={true}
         onSuccess={handleTrainerAssigned}
         onDelete={handleTrainerRemoved}
+      />
+
+      <TestModal 
+        isOpen={isWorkoutCreationModalOpen} 
+        onClose={handleWorkoutCreationClose} 
+        entityType="workout"
+        initialData={{ 
+          clientId: id, 
+          trainerId: selectedTrainerForWorkout?.id 
+        }}
+        isAdd={true}
+        onSuccess={handleWorkoutCreated}
       />
     </div>
   );
